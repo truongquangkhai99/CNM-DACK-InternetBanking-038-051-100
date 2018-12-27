@@ -1,8 +1,8 @@
 import React from "react";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
-import Signin from "./components/Signin";
-import Signup from "./components/Signup";
+import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
 
 const routes = [
   {
@@ -15,13 +15,13 @@ const routes = [
     path: "/sign-in",
     isPrivate: false,
     exact: false,
-    comp: props => <Signin {...props} />
+    comp: props => <SignIn {...props} />
   },
   {
     path: "/sign-up",
     isPrivate: false,
     exact: false,
-    comp: props => <Signup {...props} />
+    comp: props => <SignUp {...props} />
   },
   {
     path: "",

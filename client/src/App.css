@@ -1,5 +1,4 @@
 .page__account {
-  align-items: center;
   background: rgb(48, 119, 222);
   background: -moz-linear-gradient(
     165deg,
@@ -19,30 +18,26 @@
     rgba(0, 29, 255, 1) 100%,
     rgba(2, 0, 36, 1) 100%
   );
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
+  min-height: 100vh;
   width: 100vw;
 }
 
 .form-panel {
-  background: whitesmoke;
-  border-radius: 10px;
-  box-shadow: 10px 9px 22px -3px rgba(0, 0, 0, 0.75);
   padding: 0 45px 25px 45px;
   text-align: center;
-  width: 670px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
-  -webkit-box-shadow: 10px 9px 22px -3px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 10px 9px 22px -3px rgba(0, 0, 0, 0.75);
+  width: 585px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-duration: 0.5s;
 }
 
-.form-panel > div > * {
+.form-panel > div > div {
+  margin-bottom: 5px;
+  transition-duration: 0.1s;
+}
+
+.form-panel > div > div > * {
   margin-top: 25px;
 }
 
@@ -55,7 +50,7 @@
 .form-panel h1 {
   color: #1735a1;
   font-size: 3em;
-  margin: 30px 0 35px 0;
+  margin: 30px 0 35px 0 !important;
 }
 
 #g-recaptcha > div {
@@ -68,59 +63,57 @@
 }
 
 .sign-up > div {
+  margin-top: 35px;
+}
+
+.sign-up > div > div {
   margin-top: 10px;
   display: inline-block;
   min-height: 405px;
   width: 50%;
 }
 
-.sign-up > div:first-of-type {
+.sign-up > div > div:first-of-type {
   position: relative;
   top: -50px;
   padding-right: 50px;
   border-right: 1px solid lightgray;
 }
 
-.sign-up > div:last-of-type {
+.sign-up > div > div:last-of-type {
   padding-left: 45px;
 }
 
 @media screen and (max-width: 720px) {
   .form-panel {
     padding: 1px 35px;
-  }
-}
-
-@media screen and (max-width: 921px) {
-  .form-panel {
-    box-shadow: none;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-  }
-
-  .form-panel,
-  .sign-up {
-    border-radius: 0;
     min-height: 100vh;
     width: 100%;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    -ms-border-radius: 0;
-    -o-border-radius: 0;
   }
 
-  .sign-up > div {
+  .sign-up > div > div {
     display: block;
     width: 100%;
     padding: initial !important;
     border: none !important;
   }
 
-  .sign-up > div:first-of-type {
+  .sign-up > div > div:first-of-type {
     padding-top: 50px !important;
   }
 
-  .sign-up > div:last-of-type {
-    margin-top: -30px;
+  .sign-up > div > div:last-of-type {
+    margin-top: -35px !important;
+  }
+}
+
+@media screen and (max-width: 921px) {
+  .sign-up {
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .sign-up > div > div {
+    margin-top: -5px !important;
   }
 }
