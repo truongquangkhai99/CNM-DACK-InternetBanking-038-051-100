@@ -1,0 +1,31 @@
+{
+  "name": "qlbh-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.11",
+    "moment": "^2.22.2",
+    "morgan": "^1.9.1",
+    "mysql": "^2.16.0",
+    "rand-token": "^0.4.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "shortid": "^2.2.14",
+    "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
