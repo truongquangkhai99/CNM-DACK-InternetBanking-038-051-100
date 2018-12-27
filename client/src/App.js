@@ -1,64 +1,28 @@
-import React, { Component } from 'react';
-import Recaptcha from 'react-recaptcha';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import CssBaseline from "@material-ui/core/CssBaseline"; // normalize.css
+import PrivateRoute from "./components/PrivateRoute";
+import routes from "./routes";
+// import logo from "./logo.svg";
+import "./App.css";
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-
-    this.handleSubscribe = this.handleSubscribe.bind(this);
-    this.recaptchaLoaded = this.recaptchaLoaded.bind(this);
-    this.verifyCallback = this.verifyCallback.bind(this);
-
-    this.state = {
-      isVerified: false
-    }
-  }
-
-  recaptchaLoaded() {
-    console.log('capcha successfully loaded');
-  }
-
-  handleSubscribe() {
-    if (this.state.isVerified) {
-      alert('You have successfully subscribed!');
-    } else {
-      alert('Please verify that you are a human!');
-    }
-  }
-
-  verifyCallback(response) {
-    if (response) {
-      this.setState({
-        isVerified: true
-      })
-    }
-  }
-
   render() {
+    const screens = routes.map(({ path, isPrivate, exact, comp }, index) =>
+      isPrivate === true ? (
+        <PrivateRoute key={index} path={path} exact={exact} component={comp} />
+      ) : (
+        <Route key={index} path={path} exact={exact} component={comp} />
+      )
+    );
+
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">React Recaptcha Demo - PentaCode</h1>
-        </header>
-        <div className="App-intro">
-          <input type="text" placeholder="email@company.com" />
-
-          <div
-            className="convert"
-            onClick={this.handleSubscribe}
-          >Subscribe</div>
-
-          <Recaptcha
-            sitekey="6LfCAoUUAAAAAPHQTGofRMltqShtjI9L9wvl90LG"
-            render="explicit"
-            onloadCallback={this.recaptchaLoaded}
-            verifyCallback={this.verifyCallback}
-          />
+      <BrowserRouter>
+        <div>
+          <CssBaseline />
+          <Switch>{screens}</Switch>
         </div>
-      </div>
+      </BrowserRouter>
     );
   }
 }
