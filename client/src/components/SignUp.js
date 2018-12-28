@@ -61,7 +61,7 @@ export default class SignUp extends React.Component {
     const emailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (emailRegEx.test(email) === false) return;
     // validate address, name, password, phone
-    if (address === "" || name === "" || password === "" || phone === "")
+    if (address.trim() === "" || name.trim() === "" || password === "" || phone === "")
       return;
 
     // sign up succeed
@@ -140,7 +140,7 @@ export default class SignUp extends React.Component {
                 value={this.state.phone}
               />
             </div>
-            <div>
+            <div> 
               <div style={{ textAlign: "left" }}>
                 <FormControl component="div">
                   <FormLabel component="legend">Gender</FormLabel>
@@ -168,12 +168,14 @@ export default class SignUp extends React.Component {
                   </RadioGroup>
                 </FormControl>
               </div>
-              <Recaptcha
-                sitekey="6LfCAoUUAAAAAPHQTGofRMltqShtjI9L9wvl90LG"
-                render="explicit"
-                onloadCallback={() => true}
-                verifyCallback={this.handleCaptchaVerify}
-              />
+              <div className="captcha-container">
+                <Recaptcha
+                  sitekey="6LfCAoUUAAAAAPHQTGofRMltqShtjI9L9wvl90LG"
+                  render="explicit"
+                  onloadCallback={() => true}
+                  verifyCallback={this.handleCaptchaVerify}
+                />
+              </div>
               <div>
                 <Button
                   variant="contained"

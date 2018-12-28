@@ -22,14 +22,19 @@
   width: 100vw;
 }
 
+.captcha-container {
+  height: 78px;
+}
+
 .form-panel {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
   padding: 0 45px 25px 45px;
   text-align: center;
+  transition-duration: 0.4s;
   width: 585px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition-duration: 0.5s;
 }
 
 .form-panel > div > div {
@@ -62,20 +67,14 @@
   height: 580px;
 }
 
-.sign-up > div {
-  margin-top: 35px;
-}
-
 .sign-up > div > div {
-  margin-top: 10px;
   display: inline-block;
-  min-height: 405px;
+  height: 415px;
+  vertical-align: top;
   width: 50%;
 }
 
 .sign-up > div > div:first-of-type {
-  position: relative;
-  top: -50px;
   padding-right: 50px;
   border-right: 1px solid lightgray;
 }
@@ -85,35 +84,19 @@
 }
 
 @media screen and (max-width: 720px) {
-  .form-panel {
-    padding: 1px 35px;
-    min-height: 100vh;
-    width: 100%;
+  .sign-up {
+    height: 139vh;
   }
 
   .sign-up > div > div {
-    display: block;
-    width: 100%;
-    padding: initial !important;
-    border: none !important;
-  }
-
-  .sign-up > div > div:first-of-type {
-    padding-top: 50px !important;
-  }
-
-  .sign-up > div > div:last-of-type {
-    margin-top: -35px !important;
+    display: initial;
+    border: none;
   }
 }
 
 @media screen and (max-width: 921px) {
-  .sign-up {
+  .form-panel {
     min-height: 100vh;
     width: 100%;
-  }
-
-  .sign-up > div > div {
-    margin-top: -5px !important;
   }
 }
