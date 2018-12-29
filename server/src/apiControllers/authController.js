@@ -12,27 +12,6 @@ router.post('/user', (req, res) => {
             console.log(value);
             res.statusCode = 201;
             res.json(req.body);
-
-            // nếu type = 4 <=> người dùng là driver
-            // add tiếp vào table driver
-            if (req.body.Type == 4) {
-                const driverId = id;
-                const driverName = req.body.Name;
-                const driverPhone = req.body.Phone;
-                const driverStatus = "STANDBY";
-                const driverObject = {
-                    driverId,
-                    driverName,
-                    driverStatus,
-                    driverPhone
-                }
-                authRepo.addDriver(driverObject)
-                    .then(console.log("added new driver"))
-                    .catch(err => {
-                        console.log(err);
-                    })
-            }
-
         })
         .catch(err => {
             console.log(err);
@@ -77,37 +56,37 @@ router.post('/login', (req, res) => {
 });
 //get new accessToken
 
-router.post('/token',(req, res)=>{
+router.post('/token', (req, res) => {
     let refToken = req.headers['x-ref-token'];
     console.log(refToken);
-    if(refToken !== '') {
+    if (refToken !== '') {
         authRepo.getNewAccessToken(refToken)
             .then(value => {
                 console.log('then -> ');
-            console.log(value);
-            res.json({
-                'access_token':value
-            });
-        })
+                console.log(value);
+                res.json({
+                    'access_token': value
+                });
+            })
             .catch(err => {
                 console.log('catch ->');
-               console.log(err);
-               if(err.errMsg === 'DB_QUERY_ERROR'){
-                   res.statusCode = 500;
-                   res.json({
-                       msg:'Server error'
-                   });
-               }else{
-                   res.statusCode = 401;
-                   res.json({
-                       msg: err.errMsg
-                   });
-               }
+                console.log(err);
+                if (err.errMsg === 'DB_QUERY_ERROR') {
+                    res.statusCode = 500;
+                    res.json({
+                        msg: 'Server error'
+                    });
+                } else {
+                    res.statusCode = 401;
+                    res.json({
+                        msg: err.errMsg
+                    });
+                }
             });
-    }else{
+    } else {
         res.statusCode = 401;
         res.json({
-            msg:'Unauthorized'
+            msg: 'Unauthorized'
         });
     }
 });

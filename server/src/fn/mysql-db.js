@@ -6,7 +6,7 @@ var createConnection = () => {
     // port: '8889',
     user: "root",
     password: "root",
-    database: "requestbike"
+    database: "banking"
   });
 };
 
