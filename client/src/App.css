@@ -1,32 +1,102 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
+.page__account {
+  background: rgb(48, 119, 222);
+  background: -moz-linear-gradient(
+    165deg,
+    rgba(48, 119, 222, 1) 22%,
+    rgba(0, 29, 255, 1) 100%,
+    rgba(2, 0, 36, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    165deg,
+    rgba(48, 119, 222, 1) 22%,
+    rgba(0, 29, 255, 1) 100%,
+    rgba(2, 0, 36, 1) 100%
+  );
+  background: linear-gradient(
+    165deg,
+    rgba(48, 119, 222, 1) 22%,
+    rgba(0, 29, 255, 1) 100%,
+    rgba(2, 0, 36, 1) 100%
+  );
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  width: 100vw;
+}
+
+.captcha-container {
+  height: 78px;
+}
+
+.form-panel {
   align-items: center;
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  overflow: hidden;
+  padding: 0 45px 25px 45px;
+  text-align: center;
+  transition-duration: 0.4s;
+  width: 585px;
 }
 
-.App-link {
-  color: #61dafb;
+.form-panel > div > div {
+  margin-bottom: 5px;
+  transition-duration: 0.1s;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.form-panel > div > div > * {
+  margin-top: 25px;
+}
+
+.form-panel a {
+  color: #3f51b5;
+  outline: none;
+  text-decoration: none;
+}
+
+.form-panel h1 {
+  color: #1735a1;
+  font-size: 3em;
+  margin: 30px 0 35px 0 !important;
+}
+
+#g-recaptcha > div {
+  margin: 0 auto;
+}
+
+.sign-up {
+  width: 860px;
+  height: 580px;
+}
+
+.sign-up > div > div {
+  display: inline-block;
+  height: 415px;
+  vertical-align: top;
+  width: 50%;
+}
+
+.sign-up > div > div:first-of-type {
+  padding-right: 50px;
+  border-right: 1px solid lightgray;
+}
+
+.sign-up > div > div:last-of-type {
+  padding-left: 45px;
+}
+
+@media screen and (max-width: 720px) {
+  .sign-up {
+    height: 139vh;
   }
-  to {
-    transform: rotate(360deg);
+
+  .sign-up > div > div {
+    display: initial;
+    border: none;
+  }
+}
+
+@media screen and (max-width: 921px) {
+  .form-panel {
+    min-height: 100vh;
+    width: 100%;
   }
 }
