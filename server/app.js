@@ -19,6 +19,8 @@ var payAccCtrl = require("./src/apiControllers/payAccControllers");
 
 var userCtrl = require("./src/apiControllers/userControllers");
 
+var customerCtrl = require("./src/apiControllers/customerControllers");
+
 // Controllers END
 
 var verifyAccessToken = require("./src/repos/authRepo").verifyAccessToken;
@@ -40,6 +42,9 @@ app.use("/user", verifyAccessToken, userCtrl);
 
 app.use("/", payAccCtrl);
 // app.use("/", verifyAccessToken, payAccCtrl);
+
+app.use("/", customerCtrl);
+// app.use("/", verifyAccessToken, customerCtrl);
 
 //app.use("/driver", driverCtrl);
 // app.use("/driver", verifyAccessToken, driverCtrl);

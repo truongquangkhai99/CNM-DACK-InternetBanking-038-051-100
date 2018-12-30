@@ -80,13 +80,14 @@
 					},
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImZfaWQiOiIxMnJuaFA3ZzE2IiwiZl91c2VybmFtZSI6InN0YWZmIiwiZl9wYXNzd29yZCI6IjIwMmNiOTYyYWM1OTA3NWI5NjRiMDcxNTJkMjM0YjcwIiwiZl9lbWFpbCI6InNvbmd2YW5jYW1AZ21haWwuY29tIiwiZl9uYW1lIjoibmhhbnZpZW4iLCJmX3Bob25lIjoiMDY5ODM1NDQiLCJmX3R5cGUiOjJ9LCJpYXQiOjE1NDYxMzQzMjIsImV4cCI6MTU0NjE5NDMyMn0.h1gidRbQBq6wIGoNE1CSnKx03cP1AoVrXBeYoOQLdeM",
-						"type": "text"
+						"value": "",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach\",\n    \"accNumber\": \"123456789\",\n    \"balance\": \"100000\"\n}"
+					"raw": "{\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach1\"\n}"
 				},
 				"url": {
 					"raw": "localhost:3001/payAcc",
@@ -99,6 +100,76 @@
 					]
 				},
 				"description": "tạo tài khoản thanh toán"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/customers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3001/customers",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"customers"
+					]
+				},
+				"description": "Get danh sách customers"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/payAccs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3001/payAccs",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"payAccs"
+					]
+				},
+				"description": "get tất cả tài khoản thanh toán"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/payAccs/songvancam@gmail.com",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3001/payAccs/songvancam@gmail.com",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"payAccs",
+						"songvancam@gmail.com"
+					]
+				},
+				"description": "get tài khoản thanh toán theo email"
 			},
 			"response": []
 		}

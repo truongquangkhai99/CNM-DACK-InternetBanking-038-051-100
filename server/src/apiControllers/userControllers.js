@@ -1,7 +1,4 @@
 var express = require("express");
-var uid = require("rand-token").uid;
-var userRepo = require("../repos/userRepo");
-
 var router = express.Router();
 
 router.post("/me", (req, res) => {
@@ -21,19 +18,6 @@ router.post("/id", (req, res) => {
   res.json({
     id: payload.user.f_id
   });
-});
-
-router.get("/driver/:driverId", (req, res) => {
-  const driverId = req.params.driverId;
-  userRepo
-    .getDriverInfo(driverId)
-    .then(rows => {
-      res.status(200).json(rows[0]);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).end("View error log on console");
-    });
 });
 
 module.exports = router;

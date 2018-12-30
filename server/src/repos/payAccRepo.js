@@ -20,3 +20,8 @@ exports.loadAll = () => {
   var sql = `select * from payAcc`;
   return db.load(sql);
 };
+
+exports.loadByEmail = (clientEmail) => {
+  var sql = `select * from payacc where clientEmail = '${clientEmail}'`;
+  return db.load(sql);
+};
