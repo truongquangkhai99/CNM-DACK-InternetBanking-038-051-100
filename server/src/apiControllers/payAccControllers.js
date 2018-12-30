@@ -28,11 +28,11 @@ router.get("/payAccs", (req, res) => {
     });
 });
 
-router.get("/payAccs/:email", (req, res) => {
-  const clientEmail = req.params.email;
+router.get("/payAccs/:customerId", (req, res) => {
+  const {customerId} = req.params;
 
   payAccRepo
-    .loadByEmail(clientEmail)
+    .loadByCustomerId(customerId)
     .then(rows => {
       res.statusCode = 200;
       // res.json(rows);
@@ -91,7 +91,7 @@ router.patch("/payAcc/balance", (req, res) => {
   }
 
   payAccRepo
-    .UpdateBalanceById(payAccEntity)
+    .UpdateBalanceByAccNum(payAccEntity)
     .then(result => {
       console.log(result);
       res.statusCode = 201;

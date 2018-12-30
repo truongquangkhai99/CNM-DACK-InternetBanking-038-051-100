@@ -87,7 +87,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach1\"\n}"
+					"raw": "{\n\t\"customerId\": \"8yZfAOq1pm\",\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach1\"\n}"
 				},
 				"url": {
 					"raw": "localhost:3001/payAcc",
@@ -170,6 +170,37 @@
 					]
 				},
 				"description": "get tài khoản thanh toán theo email"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/payAcc/balance",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"accNumber\": \"87240963\",\n\t\"newBalance\": \"1202020\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/payAcc/balance",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"payAcc",
+						"balance"
+					]
+				},
+				"description": "Update balance của payAcc"
 			},
 			"response": []
 		}

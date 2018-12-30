@@ -3,6 +3,7 @@ var db = require("../fn/mysql-db");
 exports.add = payAccEntity => {
   const {
     id,
+    customerId,
     clientEmail,
     clientName,
     accNumber,
@@ -11,8 +12,8 @@ exports.add = payAccEntity => {
   } = payAccEntity;
 
   const sql =
-    "insert into `payAcc`(`id`, `clientEmail`, `clientName`, `accNumber`, `balance`, `createdAt`)" +
-    `values('${id}','${clientEmail}','${clientName}','${accNumber}','${balance}', '${createdAt}');`;
+    "insert into `payAcc`(`id`, `customerId`, `clientEmail`, `clientName`, `accNumber`, `balance`, `createdAt`)" +
+    `values('${id}', '${customerId}', '${clientEmail}','${clientName}','${accNumber}','${balance}', '${createdAt}');`;
   return db.save(sql);
 };
 
@@ -21,12 +22,12 @@ exports.loadAll = () => {
   return db.load(sql);
 };
 
-exports.loadByEmail = clientEmail => {
-  var sql = `select * from payacc where clientEmail = '${clientEmail}'`;
+exports.loadByCustomerId = customerId => {
+  var sql = `select * from payacc where customerId = '${customerId}'`;
   return db.load(sql);
 };
 
-exports.UpdateBalanceById = payAccEntity => {
+exports.UpdateBalanceByAccNum = payAccEntity => {
   const { accNumber, newBalance } = payAccEntity;
   var sql =
     "update payacc set balance = " +

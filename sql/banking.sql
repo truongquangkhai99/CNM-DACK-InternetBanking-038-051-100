@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS `payacc`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `payacc` (
   `id` varchar(10) NOT NULL,
+  `customerId` varchar(45) NOT NULL,
   `clientEmail` varchar(45) NOT NULL,
   `clientName` varchar(45) NOT NULL,
   `accNumber` varchar(45) NOT NULL,
@@ -41,7 +42,7 @@ CREATE TABLE `payacc` (
 
 LOCK TABLES `payacc` WRITE;
 /*!40000 ALTER TABLE `payacc` DISABLE KEYS */;
-INSERT INTO `payacc` VALUES ('_e3buYR82','songvancam@gmail.com','khach1','31058967','0','2018-12-30 14:18'),('Lbf1laR_O','songvancam@gmail.com','khach1','07311069','0','2018-12-30 14:06'),('Lx7npUpKi','songvancam@gmail.com','khach1','09442802','0','2018-12-30 14:22');
+INSERT INTO `payacc` VALUES ('avVPUBuDR','8yZfAOq1pm','songvancam@gmail.com','khach1','87240963','1202020','2018-12-30 15:36');
 /*!40000 ALTER TABLE `payacc` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,4 +114,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-30 14:29:38
+-- Dump completed on 2018-12-30 15:38:28
