@@ -2,7 +2,9 @@ import React from "react";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
+// import SignUp from "./components/SignUp";
+import CustomersContainer from "./components/Customers";
+import PayAccContainer from "./components/PayAcc";
 
 const routes = [
   {
@@ -17,11 +19,23 @@ const routes = [
     exact: false,
     comp: props => <SignIn {...props} />
   },
+  // {
+  //   path: "/sign-up",
+  //   isPrivate: false,
+  //   exact: false,
+  //   comp: props => <SignUp {...props} />
+  // },
   {
-    path: "/sign-up",
-    isPrivate: false,
-    exact: false,
-    comp: props => <SignUp {...props} />
+    path: "/customers",
+    isPrivate: true,
+    exact: true,
+    comp: props => <CustomersContainer {...props} />
+  },
+  {
+    path: "/payment-accounts",
+    isPrivate: true,
+    exact: true,
+    comp: props => <PayAccContainer {...props} />
   },
   {
     path: "",

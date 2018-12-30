@@ -1,12 +1,14 @@
 import React from "react";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import axios from "axios";
 import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
 import Recaptcha from "react-recaptcha";
+import authHelper from "../utils/authHelper";
 
 export default class SignIn extends React.Component {
   state = {
     captcha: false,
-    email: "",
+    username: "",
     password: "",
     redirectToReferrer: false
   };
@@ -15,7 +17,7 @@ export default class SignIn extends React.Component {
     document.addEventListener("keyup", this.handleEnterKeyup);
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     document.removeEventListener("keyup", this.handleEnterKeyup);
   }
 
@@ -27,23 +29,42 @@ export default class SignIn extends React.Component {
   handleCaptchaVerify = res => this.setState({ captcha: true });
 
   handleSignIn = () => {
-    const { email, password, captcha } = this.state;
-
+    const { username, password, captcha } = this.state;
     // validate captcha
     if (captcha === false) return;
-    // validate email
-    const emailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (emailRegEx.test(email) === false) return;
-    // validate password
-    if (password === "") return;
+    // validate username, password
+    if (username === "" || password === "") return;
 
-    // sign in succeed
-    this.setState({ redirectToReferrer: true });
+    // submit data
+    axios
+      .post("http://localhost:3001/auth/login", {
+        username,
+        pwd: password,
+        type: 2
+      })
+      .then(resp => {
+        console.log(resp);
+        const {
+          status,
+          data: { auth, access_token, refresh_token }
+        } = resp;
+        if (status === 200 && auth === true) {
+          authHelper.login(access_token, refresh_token);
+          this.setState({ redirectToReferrer: true });
+        } else {
+          throw new Error("Something wrong while signing in, status ", status);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
     const { redirectToReferrer } = this.state;
-    const { from } = this.props.location.state || { from: { pathname: "/" } };
+    const { from } = this.props.location.state || {
+      from: { pathname: "/customers" }
+    };
 
     return redirectToReferrer === true ? (
       <Redirect to={from} />
@@ -62,14 +83,14 @@ export default class SignIn extends React.Component {
                 INTERNET BANKING
               </Typography>
               <TextField
-                id="signInEmail"
-                label="Email"
-                type="email"
+                id="signInUsername"
+                label="Username"
+                type="text"
                 autoFocus
                 fullWidth
                 margin="normal"
                 onChange={this.handleInputChange}
-                name="email"
+                name="username"
               />
               <TextField
                 id="signInPassword"
@@ -80,7 +101,7 @@ export default class SignIn extends React.Component {
                 onChange={this.handleInputChange}
                 name="password"
               />
-              <div>
+              <div className="captcha-container">
                 <Recaptcha
                   sitekey="6LfCAoUUAAAAAPHQTGofRMltqShtjI9L9wvl90LG"
                   render="explicit"
@@ -97,9 +118,6 @@ export default class SignIn extends React.Component {
                 >
                   SIGN IN
                 </Button>
-              </div>
-              <div>
-                <Link to="/sign-up">Don't have an account yet? Sign up!</Link>
               </div>
             </div>
           </div>

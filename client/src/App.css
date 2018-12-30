@@ -1,3 +1,9 @@
+a {
+  color: #3f51b5;
+  outline: none;
+  text-decoration: none;
+}
+
 .page__account {
   background: rgb(48, 119, 222);
   background: -moz-linear-gradient(
@@ -46,12 +52,6 @@
   margin-top: 25px;
 }
 
-.form-panel a {
-  color: #3f51b5;
-  outline: none;
-  text-decoration: none;
-}
-
 .form-panel h1 {
   color: #1735a1;
   font-size: 3em;
@@ -63,40 +63,43 @@
 }
 
 .sign-up {
-  width: 860px;
-  height: 580px;
+  width: 100%;
+  padding: 25px;
+  margin-bottom: 20px;
 }
 
 .sign-up > div > div {
   display: inline-block;
-  height: 415px;
-  vertical-align: top;
   width: 50%;
+  vertical-align: top;
 }
 
 .sign-up > div > div:first-of-type {
-  padding-right: 50px;
-  border-right: 1px solid lightgray;
+  padding-right: 15px;
 }
 
 .sign-up > div > div:last-of-type {
-  padding-left: 45px;
+  padding-left: 15px;
 }
 
-@media screen and (max-width: 720px) {
-  .sign-up {
-    height: 139vh;
-  }
-
-  .sign-up > div > div {
-    display: initial;
-    border: none;
-  }
+.sign-up > div > div:last-of-type > div:first-of-type {
+  margin-bottom: 25px;
 }
 
 @media screen and (max-width: 921px) {
   .form-panel {
     min-height: 100vh;
     width: 100%;
+  }
+  .sign-up > div > div {
+    display: initial;
+  }
+
+  .sign-up > div > div:first-of-type {
+    padding-right: 0;
+  }
+
+  .sign-up > div > div:last-of-type {
+    padding-left: 0;
   }
 }

@@ -30,7 +30,7 @@ export default class SignUp extends React.Component {
     document.addEventListener("keyup", this.handleEnterKeyup);
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     document.removeEventListener("keyup", this.handleEnterKeyup);
   }
 
@@ -41,11 +41,8 @@ export default class SignUp extends React.Component {
     const { name, value } = e.target;
     const { phone } = this.state;
     // validate phone
-    if (
-      name === "phone" &&
-      ((phone.length === 0 && (value !== "+" && isNaN(value))) ||
-        (phone.length === 1 && isNaN(value)))
-    )
+    const phoneRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+    if (name === "phone" && phoneRegex.test(phone + value.toString()) === false)
       return;
 
     this.setState({ [name]: value });
@@ -61,7 +58,12 @@ export default class SignUp extends React.Component {
     const emailRegEx = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (emailRegEx.test(email) === false) return;
     // validate address, name, password, phone
-    if (address.trim() === "" || name.trim() === "" || password === "" || phone === "")
+    if (
+      address.trim() === "" ||
+      name.trim() === "" ||
+      password === "" ||
+      phone === ""
+    )
       return;
 
     // sign up succeed
@@ -140,7 +142,7 @@ export default class SignUp extends React.Component {
                 value={this.state.phone}
               />
             </div>
-            <div> 
+            <div>
               <div style={{ textAlign: "left" }}>
                 <FormControl component="div">
                   <FormLabel component="legend">Gender</FormLabel>
