@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "b270d7af-5d3a-4327-9281-3c0cd65e39a1",
+		"name": "CNM_Banking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:3001/auth/user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Username\": \"client\",\n    \"Password\": \"123\",\n    \"Name\": \"khach\",\n    \"Phone\": \"06983544\",\n    \"Email\": \"songvancam@gmail.com\",\n    \"Type\": \"1\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/auth/user",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"auth",
+						"user"
+					]
+				},
+				"description": "tạo user\ntype = 1 : client\ntype = 2 : staff"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/auth/login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"staff\",\n\t\"pwd\": \"123\",\n\t\"type\": \"2\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"auth",
+						"login"
+					]
+				},
+				"description": "login"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/payAcc",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImZfaWQiOiIxMnJuaFA3ZzE2IiwiZl91c2VybmFtZSI6InN0YWZmIiwiZl9wYXNzd29yZCI6IjIwMmNiOTYyYWM1OTA3NWI5NjRiMDcxNTJkMjM0YjcwIiwiZl9lbWFpbCI6InNvbmd2YW5jYW1AZ21haWwuY29tIiwiZl9uYW1lIjoibmhhbnZpZW4iLCJmX3Bob25lIjoiMDY5ODM1NDQiLCJmX3R5cGUiOjJ9LCJpYXQiOjE1NDYxMzQzMjIsImV4cCI6MTU0NjE5NDMyMn0.h1gidRbQBq6wIGoNE1CSnKx03cP1AoVrXBeYoOQLdeM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach\",\n    \"accNumber\": \"123456789\",\n    \"balance\": \"100000\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/payAcc",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"payAcc"
+					]
+				},
+				"description": "tạo tài khoản thanh toán"
+			},
+			"response": []
+		}
+	]
+}
