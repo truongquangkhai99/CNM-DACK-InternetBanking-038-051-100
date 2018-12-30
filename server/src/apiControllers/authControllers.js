@@ -34,12 +34,13 @@ router.post("/login", (req, res) => {
 
         authRepo
           .updateRefreshToken(userEntity.f_id, rfToken)
-          .then(value => {
+          .then(() => {
             res.json({
               auth: true,
               access_token: acToken,
-              refresh_token: rfToken,
-              // type: userEntity.f_type
+              refresh_token: rfToken,              
+              name: userEntity.f_name,
+              type: userEntity.f_type
             });
           })
           .catch(err => {
