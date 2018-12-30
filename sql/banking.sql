@@ -85,7 +85,8 @@ CREATE TABLE `users` (
   `f_name` varchar(45) NOT NULL,
   `f_phone` varchar(45) NOT NULL,
   `f_type` int(1) unsigned NOT NULL,
-  PRIMARY KEY (`f_id`)
+  PRIMARY KEY (`f_id`),
+  UNIQUE KEY `f_email_UNIQUE` (`f_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -95,7 +96,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('12rnhP7g16','staff','202cb962ac59075b964b07152d234b70','songvancam@gmail.com','nhanvien','06983544',2),('6fqv0XbIX4','client','202cb962ac59075b964b07152d234b70','songvancam@gmail.com','khach','06983544',1);
+INSERT INTO `users` VALUES ('nAR1eZYfG3','staff','202cb962ac59075b964b07152d234b70','haha@gmail.com','nhanvien','06983544',2),('z8OY7nZNFS','client','202cb962ac59075b964b07152d234b70','songvancam@gmail.com','khach','06983544',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,4 +113,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-30  8:53:39
+-- Dump completed on 2018-12-30  9:27:52
