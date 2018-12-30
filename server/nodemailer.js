@@ -3,11 +3,12 @@ var nodemailer = require("nodemailer");
 const output = verifyEntity => {
   const { clientName, otp } = verifyEntity;
   return `
-    <p>Xin chào <i>${clientName}</i>, </p>
-    <p>Bạn cần nhập mã xác nhận bên dưới để hoàn tất giao dịch: </p>
-    <p>${otp}</p>
-    <p>Chúc công việc thuận lợi,</p>
-    <p>Team Banking</p>
+    <p>Dear <i>${clientName}</i>, </p>
+    <p>We have generated a One-Time Passcode for your transaction. </p>
+    <p><b>Your One-Time Passcode is: ${otp}</b></p>
+    <p>Please enter this code into the form that you have accessed.</p>
+    <p>Thank you for utilizing our services,</p>
+    <p>Banking team</p>
   `;
 };
 
@@ -24,8 +25,7 @@ exports.sendMail = verifyEntity => {
   var mailOptions = {
     from: "jenkin.testing@gmail.com",
     to: clientEmail,
-    subject: "Xác nhận giao dịch",
-    text: "OTP",
+    subject: "Verify transaction",
     html: output(verifyEntity)
   };
 

@@ -54,7 +54,7 @@ app.post("/send-otp", (req, res) => {
   };
   nodemailer.sendMail(verifyEntity);
   res.statusCode = 201;
-  res.json(req.body);
+  res.json({ otp: otp });
 });
 
 //app.use("/", requestCtrl);
