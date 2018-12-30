@@ -38,8 +38,8 @@ app.use("/user", verifyAccessToken, userCtrl);
 //app.use("/", requestCtrl);
 // app.use("/", verifyAccessToken, requestCtrl);
 
-// app.use("/", payAccCtrl);
-app.use("/", verifyAccessToken, payAccCtrl);
+app.use("/", payAccCtrl);
+// app.use("/", verifyAccessToken, payAccCtrl);
 
 //app.use("/driver", driverCtrl);
 // app.use("/driver", verifyAccessToken, driverCtrl);
