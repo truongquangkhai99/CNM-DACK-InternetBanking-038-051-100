@@ -27,12 +27,12 @@ exports.loadByCustomerId = customerId => {
   return db.load(sql);
 };
 
-exports.UpdateBalanceByAccNum = payAccEntity => {
-  const { accNumber, newBalance } = payAccEntity;
+exports.UpdateBalanceById = payAccEntity => {
+  const { payAccId, newBalance } = payAccEntity;
   var sql =
     "update payacc set balance = " +
     `'${newBalance}'` +
-    " where accNumber=" +
-    `'${accNumber}';`;
+    " where id=" +
+    `'${payAccId}';`;
   return db.save(sql);
 };

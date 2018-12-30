@@ -81,17 +81,17 @@ router.post("/payAcc", (req, res) => {
 });
 
 router.patch("/payAcc/balance", (req, res) => {
-  const accNumber = req.body.accNumber;
+  const payAccId = req.body.payAccId;
   // newBalance = số dư cũ + tiền cần nạp;
   const newBalance = req.body.newBalance;
 
   const payAccEntity = {
-    accNumber,
+    payAccId,
     newBalance
   }
 
   payAccRepo
-    .UpdateBalanceByAccNum(payAccEntity)
+    .UpdateBalanceById(payAccEntity)
     .then(result => {
       console.log(result);
       res.statusCode = 201;

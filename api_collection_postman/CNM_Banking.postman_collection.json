@@ -187,7 +187,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"accNumber\": \"87240963\",\n\t\"newBalance\": \"1202020\"\n}"
+					"raw": "{\n\t\"payAccId\": \"avVPUBuDR\",\n\t\"newBalance\": \"1202020\"\n}"
 				},
 				"url": {
 					"raw": "localhost:3001/payAcc/balance",
