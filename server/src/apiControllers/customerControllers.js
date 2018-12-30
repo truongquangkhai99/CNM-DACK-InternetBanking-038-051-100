@@ -1,5 +1,7 @@
 var express = require("express");
 var customerRepo = require("../repos/customerRepo");
+var moment = require("moment");
+var _ = require("lodash");
 
 var router = express.Router();
 
@@ -7,7 +9,15 @@ router.get("/customers", (req, res) => {
   customerRepo
     .getCustomers()
     .then(rows => {
-      res.status(200).json(rows);
+      res.statusCode = 200;
+      // res.json(rows);
+      res.send(
+        _.sortBy(JSON.parse(JSON.stringify(rows)), [
+          function(o) {
+            return o.createdAt;
+          }
+        ]).reverse()
+      );
     })
     .catch(err => {
       console.log(err);

@@ -86,6 +86,7 @@ CREATE TABLE `users` (
   `f_name` varchar(45) NOT NULL,
   `f_phone` varchar(45) NOT NULL,
   `f_type` int(1) unsigned NOT NULL,
+  `f_createdAt` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`f_id`),
   UNIQUE KEY `f_email_UNIQUE` (`f_email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -97,7 +98,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('8yZfAOq1pm','client','202cb962ac59075b964b07152d234b70','songvancam111@gmail.com','khach','06983544',1),('nAR1eZYfG3','staff','202cb962ac59075b964b07152d234b70','haha@gmail.com','nhanvien','06983544',2),('z8OY7nZNFS','client','202cb962ac59075b964b07152d234b70','songvancam@gmail.com','khach','06983544',1);
+INSERT INTO `users` VALUES ('7kxwDSxCrD','staff','202cb962ac59075b964b07152d234b70','taulanhanvienm@gmail.com','nhanvien','06983544',2,'2018-12-30 16:34'),('oOyRmS5bjC','customer2','202cb962ac59075b964b07152d234b70','taulakhach@gmail.com','khachhangquen','06983544',1,'2018-12-30 16:37'),('RS9vvnjvYR','customer3','202cb962ac59075b964b07152d234b70','taulakha1ch@gmail.com','khachhangquen1','06983544',1,'2018-12-30 16:38'),('wdqrEyohs7','client','202cb962ac59075b964b07152d234b70','songvancam@gmail.com','khach','06983544',1,'2018-12-30 16:32');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,4 +115,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-30 15:38:28
+-- Dump completed on 2018-12-30 16:39:38

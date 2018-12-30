@@ -127,21 +127,12 @@ exports.add = (userEntity, id) => {
   // }
   // var id = uid(10);
   var md5_pwd = md5(userEntity.Password);
-  var sql = `insert into users(f_id, f_password, f_username, f_email, f_name , f_phone, f_type) values('${id}','${md5_pwd}', '${
+  var sql = `insert into users(f_id, f_password, f_username, f_email, f_name , f_phone, f_type, f_createdAt) values('${id}','${md5_pwd}', '${
     userEntity.Username
   }', '${userEntity.Email}', '${userEntity.Name}', '${userEntity.Phone}',  ${
     userEntity.Type
-  })`;
+  }, '${moment().format("YYYY-MM-DD HH:mm")}')`;
 
-  return db.save(sql);
-};
-
-exports.addDriver = driverEntity => {
-  var sql = `insert into driver(driverId, status, name, phone) values('${
-    driverEntity.driverId
-  }', '${driverEntity.driverStatus}','${driverEntity.driverName}', '${
-    driverEntity.driverPhone
-  }')`;
   return db.save(sql);
 };
 
