@@ -12,13 +12,13 @@ exports.add = payAccEntity => {
   } = payAccEntity;
 
   const sql =
-    "insert into `payAcc`(`id`, `customerId`, `clientEmail`, `clientName`, `accNumber`, `balance`, `createdAt`)" +
+    "insert into `payacc`(`id`, `customerId`, `clientEmail`, `clientName`, `accNumber`, `balance`, `createdAt`)" +
     `values('${id}', '${customerId}', '${clientEmail}','${clientName}','${accNumber}','${balance}', '${createdAt}');`;
   return db.save(sql);
 };
 
 exports.loadAll = () => {
-  var sql = `select * from payAcc`;
+  var sql = `select * from payacc`;
   return db.load(sql);
 };
 
