@@ -242,10 +242,10 @@ class Customers extends Component {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               <span>
-                Number of the payment account is <b>{payAccNumber}</b>
+                Account number: <b>{payAccNumber}</b>
               </span>
               <br />
-              <span>The balance is 0 by default</span>
+              <span>Balance: 0 (default)</span>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

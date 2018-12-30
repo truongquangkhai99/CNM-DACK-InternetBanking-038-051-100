@@ -218,7 +218,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"clientEmail\": \"trhdon123@gmail.com\",\n\t\"clientName\": \"Duy\"\n}"
+					"raw": "{\n\t\"clientEmail\": \"songvancam@gmail.com\",\n\t\"clientName\": \"C san\"\n}"
 				},
 				"url": {
 					"raw": "localhost:3001/send-otp",
