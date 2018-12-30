@@ -18,6 +18,34 @@ USE `banking`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `payacc`
+--
+
+DROP TABLE IF EXISTS `payacc`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `payacc` (
+  `id` varchar(10) NOT NULL,
+  `clientEmail` varchar(45) NOT NULL,
+  `clientName` varchar(45) NOT NULL,
+  `accNumber` varchar(45) NOT NULL,
+  `balance` varchar(45) NOT NULL,
+  `createdAt` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payacc`
+--
+
+LOCK TABLES `payacc` WRITE;
+/*!40000 ALTER TABLE `payacc` DISABLE KEYS */;
+INSERT INTO `payacc` VALUES ('durlsU1Vl','songvancam@gmail.com','khach','123456789','100000','2018-12-30 08:48');
+/*!40000 ALTER TABLE `payacc` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `userreftokenext`
 --
 
@@ -38,7 +66,7 @@ CREATE TABLE `userreftokenext` (
 
 LOCK TABLES `userreftokenext` WRITE;
 /*!40000 ALTER TABLE `userreftokenext` DISABLE KEYS */;
-INSERT INTO `userreftokenext` VALUES ('12rnhP7g16','Lv4jGBeSZBgn16CJhRirVvMhH9AGmDQr2JdlAUdp7JQBbIpnYK8GUcnws8FPxSu7xqjt99CSpzrLuDFV','2018-12-29 17:04:18');
+INSERT INTO `userreftokenext` VALUES ('12rnhP7g16','uY02bQgDORpcWqWi9Nbhd183vtZkskNeNyplJgTQ0xpVjwlLkOqZEnlb2fOp2EEqmL9we0YMAlcF2FrO','2018-12-30 08:45:22');
 /*!40000 ALTER TABLE `userreftokenext` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,4 +112,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-29 17:15:45
+-- Dump completed on 2018-12-30  8:53:39
