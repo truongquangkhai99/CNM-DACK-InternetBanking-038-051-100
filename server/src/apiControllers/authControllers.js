@@ -39,7 +39,7 @@ router.post("/login", (req, res) => {
               auth: true,
               access_token: acToken,
               refresh_token: rfToken,
-              type: userEntity.f_type
+              // type: userEntity.f_type
             });
           })
           .catch(err => {

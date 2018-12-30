@@ -40,7 +40,7 @@ export default class SignIn extends React.Component {
       .post("http://localhost:3001/auth/login", {
         username,
         pwd: password,
-        type: 2
+        // type: 2
       })
       .then(resp => {
         console.log(resp);
