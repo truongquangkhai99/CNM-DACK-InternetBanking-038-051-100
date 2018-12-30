@@ -9,11 +9,11 @@ var bodyParser = require("body-parser"),
 
 // Controllers START
 
-var driverCtrl = require("./src/apiControllers/driverControllers");
+// var driverCtrl = require("./src/apiControllers/driverControllers");
 
 var authCtrl = require("./src/apiControllers/authControllers");
 
-var requestCtrl = require("./src/apiControllers/requestControllers");
+// var requestCtrl = require("./src/apiControllers/requestControllers");
 
 var payAccCtrl = require("./src/apiControllers/payAccControllers");
 
@@ -36,13 +36,13 @@ app.use("/auth", authCtrl);
 app.use("/user", verifyAccessToken, userCtrl);
 
 //app.use("/", requestCtrl);
-app.use("/", verifyAccessToken, requestCtrl);
+// app.use("/", verifyAccessToken, requestCtrl);
 
 // app.use("/", payAccCtrl);
 app.use("/", verifyAccessToken, payAccCtrl);
 
 //app.use("/driver", driverCtrl);
-app.use("/driver", verifyAccessToken, driverCtrl);
+// app.use("/driver", verifyAccessToken, driverCtrl);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

@@ -3,8 +3,8 @@ const request = require("request-promise");
 const shortid = require("shortid");
 var _ = require("lodash");
 
-var requestRepo = require("../repos/requestRepo");
-const driverRepo = require("../repos/driverRepo");
+var requestRepo = require("../../repos/requestRepo");
+const driverRepo = require("../../repos/examples/driverRepo");
 
 var router = express.Router();
 

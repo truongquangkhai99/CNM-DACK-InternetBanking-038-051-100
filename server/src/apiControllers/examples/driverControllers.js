@@ -1,7 +1,7 @@
 var express = require("express");
 var _ = require('lodash');
 
-var driverRepo = require("../repos/driverRepo");
+var driverRepo = require("../../repos/examples/driverRepo");
 var router = express.Router();
 
 router.patch("/status", (req, res) => {

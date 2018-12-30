@@ -1,4 +1,4 @@
-var db = require("../fn/mysql-db");
+var db = require("../../fn/mysql-db");
 
 // cam-sv start
 exports.updateStatus = (newStatus, driverId) => {
