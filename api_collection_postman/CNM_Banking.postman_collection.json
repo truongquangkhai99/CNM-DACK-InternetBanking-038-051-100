@@ -68,7 +68,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3001/payAcc",
+			"name": "localhost:3001/pay-acc",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -90,13 +90,13 @@
 					"raw": "{\n\t\"customerId\": \"8yZfAOq1pm\",\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach1\"\n}"
 				},
 				"url": {
-					"raw": "localhost:3001/payAcc",
+					"raw": "localhost:3001/pay-acc",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
-						"payAcc"
+						"pay-acc"
 					]
 				},
 				"description": "tạo tài khoản thanh toán"
@@ -127,7 +127,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3001/payAccs",
+			"name": "localhost:3001/pay-accs",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -136,13 +136,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:3001/payAccs",
+					"raw": "localhost:3001/pay-accs",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
-						"payAccs"
+						"pay-accs"
 					]
 				},
 				"description": "get tất cả tài khoản thanh toán"
@@ -150,7 +150,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3001/payAccs/songvancam@gmail.com",
+			"name": "localhost:3001/pay-accs/:customerId",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -159,24 +159,55 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:3001/payAccs/songvancam@gmail.com",
+					"raw": "localhost:3001/pay-accs/8yZfAOq1pm",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
-						"payAccs",
-						"songvancam@gmail.com"
+						"pay-accs",
+						"8yZfAOq1pm"
 					]
 				},
-				"description": "get tài khoản thanh toán theo email"
+				"description": "get tài khoản thanh toán theo customerId"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/payAcc/balance",
+			"name": "localhost:3001/pay-acc/balance",
 			"request": {
 				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payAccId\": \"avVPUBuDR\",\n\t\"newBalance\": \"1202020\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/pay-acc/balance",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"pay-acc",
+						"balance"
+					]
+				},
+				"description": "Update balance của payAcc"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/send-otp",
+			"request": {
+				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
@@ -187,20 +218,19 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"payAccId\": \"avVPUBuDR\",\n\t\"newBalance\": \"1202020\"\n}"
+					"raw": "{\n\t\"clientEmail\": \"trhdon123@gmail.com\",\n\t\"clientName\": \"Duy\"\n}"
 				},
 				"url": {
-					"raw": "localhost:3001/payAcc/balance",
+					"raw": "localhost:3001/send-otp",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
-						"payAcc",
-						"balance"
+						"send-otp"
 					]
 				},
-				"description": "Update balance của payAcc"
+				"description": "Gửi mã OTP xác nhận qua email"
 			},
 			"response": []
 		}

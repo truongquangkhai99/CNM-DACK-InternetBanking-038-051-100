@@ -7,7 +7,7 @@ var payAccRepo = require("../repos/payAccRepo");
 
 var router = express.Router();
 
-router.get("/payAccs", (req, res) => {
+router.get("/pay-accs", (req, res) => {
   payAccRepo
     .loadAll()
     .then(rows => {
@@ -28,7 +28,7 @@ router.get("/payAccs", (req, res) => {
     });
 });
 
-router.get("/payAccs/:customerId", (req, res) => {
+router.get("/pay-accs/:customerId", (req, res) => {
   const {customerId} = req.params;
 
   payAccRepo
@@ -51,7 +51,8 @@ router.get("/payAccs/:customerId", (req, res) => {
     });
 });
 
-router.post("/payAcc", (req, res) => {
+
+router.post("/pay-acc", (req, res) => {
   const _payAcc = req.body;
   _payAcc.id = shortid.generate();
   _payAcc.createdAt = moment().format("YYYY-MM-DD HH:mm");
@@ -80,7 +81,7 @@ router.post("/payAcc", (req, res) => {
     });
 });
 
-router.patch("/payAcc/balance", (req, res) => {
+router.patch("/pay-acc/balance", (req, res) => {
   const payAccId = req.body.payAccId;
   // newBalance = số dư cũ + tiền cần nạp;
   const newBalance = req.body.newBalance;

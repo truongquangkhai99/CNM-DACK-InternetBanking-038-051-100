@@ -1,6 +1,5 @@
 var express = require("express");
 var customerRepo = require("../repos/customerRepo");
-var moment = require("moment");
 var _ = require("lodash");
 
 var router = express.Router();

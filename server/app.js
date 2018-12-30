@@ -5,6 +5,8 @@ var bodyParser = require("body-parser"),
   morgan = require("morgan"),
   cors = require("cors");
 
+var nodemailer = require("./nodemailer");
+
 // server nodejs START
 
 // Controllers START
@@ -36,6 +38,24 @@ app.use(cors());
 
 app.use("/auth", authCtrl);
 app.use("/user", verifyAccessToken, userCtrl);
+
+app.post("/sendOtp", (req, res) => {
+  const { clientEmail, clientName } = req.body;
+  const otp = require("rand-token")
+    .generator({
+      chars: "numeric"
+    })
+    .generate(6);
+
+  const verifyEntity = {
+    clientEmail,
+    clientName,
+    otp
+  };
+  nodemailer.sendMail(verifyEntity);
+  res.statusCode = 201;
+  res.json(req.body);
+});
 
 //app.use("/", requestCtrl);
 // app.use("/", verifyAccessToken, requestCtrl);
