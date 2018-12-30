@@ -80,4 +80,32 @@ router.post("/payAcc", (req, res) => {
     });
 });
 
+router.patch("/payAcc/balance", (req, res) => {
+  const accNumber = req.body.accNumber;
+  // newBalance = số dư cũ + tiền cần nạp;
+  const newBalance = req.body.newBalance;
+
+  const payAccEntity = {
+    accNumber,
+    newBalance
+  }
+
+  payAccRepo
+    .UpdateBalanceById(payAccEntity)
+    .then(result => {
+      console.log(result);
+      res.statusCode = 201;
+      res.json({
+        status: "OK"
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.statusCode = 500;
+      res.end("View error log on console");
+    });
+});
+
+
+
 module.exports = router;

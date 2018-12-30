@@ -21,7 +21,17 @@ exports.loadAll = () => {
   return db.load(sql);
 };
 
-exports.loadByEmail = (clientEmail) => {
+exports.loadByEmail = clientEmail => {
   var sql = `select * from payacc where clientEmail = '${clientEmail}'`;
   return db.load(sql);
+};
+
+exports.UpdateBalanceById = payAccEntity => {
+  const { accNumber, newBalance } = payAccEntity;
+  var sql =
+    "update payacc set balance = " +
+    `'${newBalance}'` +
+    " where accNumber=" +
+    `'${accNumber}';`;
+  return db.save(sql);
 };
