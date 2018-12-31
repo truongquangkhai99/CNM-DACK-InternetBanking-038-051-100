@@ -15,6 +15,10 @@ const authHelper = {
     return false;
   },
 
+  getUserEntity: () => {
+    return (getCookie("user") && JSON.parse(getCookie("user"))) || "";
+  },
+
   login: (accessToken, refreshToken, cb) => {
     const { exp, user } = jwt_decode(accessToken);
     if (!exp || Date.now() <= exp) return false;

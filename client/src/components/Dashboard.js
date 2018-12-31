@@ -12,7 +12,9 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { mainListItems, secondaryListItems } from "./listItems";
+import { mainListItems as mainListItemsStaff, secondaryListItems as secondaryListItemsStaff } from "./listItemsStaff";
+import { mainListItems as mainListItemsClient, secondaryListItems as secondaryListItemsClient } from "./listItemsClient";
+import authHelper from "../utils/authHelper"
 
 const drawerWidth = 240;
 
@@ -108,7 +110,6 @@ class Dashboard extends React.Component {
 
   render() {
     const { classes, screen } = this.props;
-
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -161,9 +162,9 @@ class Dashboard extends React.Component {
             </IconButton>
           </div>
           <Divider />
-          <List>{mainListItems}</List>
+          <List>{authHelper.getUserEntity() !== "" && authHelper.getUserEntity().f_type === 2 ? mainListItemsStaff: mainListItemsClient}</List>
           <Divider />
-          <List>{secondaryListItems}</List>
+          <List>{authHelper.getUserEntity() !== "" && authHelper.getUserEntity().f_type === 2 ? secondaryListItemsStaff: secondaryListItemsClient}</List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
