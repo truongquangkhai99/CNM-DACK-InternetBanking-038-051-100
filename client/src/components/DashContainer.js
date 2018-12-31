@@ -1,7 +1,8 @@
-import React, {Component}  from "react";
-import Customers from "./Customers"
-import InternalTransfer from "./InternalTransfer"
-import Dashboard from "./Dashboard"
+import React, { Component } from "react";
+import Dashboard from "./Dashboard";
+import Customers from "./Customers";
+import InternalTransfer from "./InternalTransfer";
+import PayAcc from "./PayAcc"
 
 export class CustomersContainer extends Component {
   render() {
@@ -10,7 +11,13 @@ export class CustomersContainer extends Component {
 }
 
 export class InternalTransferContainer extends Component {
+  render() {
+    return <Dashboard screen={<InternalTransfer />} />;
+  }
+}
+
+export class PayAccContainer extends Component {
     render() {
-      return <Dashboard screen={<InternalTransfer />} />;
+      return <Dashboard screen={<PayAcc />} />;
     }
   }

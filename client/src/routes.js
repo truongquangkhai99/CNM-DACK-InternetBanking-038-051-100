@@ -5,9 +5,13 @@ import SignIn from "./components/SignIn";
 import SignOut from "./components/SignOut";
 // import SignUp from "./components/SignUp";
 // import CustomersContainer from "./components/Customers";
-import PayAccContainer from "./components/PayAcc";
-import {CustomersContainer, InternalTransferContainer} from "./components/DashContainer";
+// import PayAccContainer from "./components/PayAcc";
 // import InternalTransferContainer from "./components/InternalTransfer";
+import {
+  CustomersContainer,
+  InternalTransferContainer,
+  PayAccContainer
+} from "./components/DashContainer";
 
 const routes = [
   {

@@ -6,7 +6,7 @@ import Dashboard from "./Dashboard";
 import PayIn from "./PayIn";
 import Message from "./Message";
 
-class PaymentAccounts extends Component {
+class PayAcc extends Component {
   state = {
     payAccs: [],
     // pay in panel
@@ -181,8 +181,4 @@ class PaymentAccounts extends Component {
   }
 }
 
-export default class PaymentAccountsContainer extends Component {
-  render() {
-    return <Dashboard screen={<PaymentAccounts />} />;
-  }
-}
+export default PayAcc
