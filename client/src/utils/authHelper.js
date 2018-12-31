@@ -19,7 +19,7 @@ const authHelper = {
     return (getCookie("user") && JSON.parse(getCookie("user"))) || "";
   },
 
-  login: (accessToken, refreshToken, cb) => {
+  signIn: (accessToken, refreshToken, cb) => {
     const { exp, user } = jwt_decode(accessToken);
     if (!exp || Date.now() <= exp) return false;
     const expires = new Date(exp * 1000);
@@ -29,7 +29,7 @@ const authHelper = {
     cb && cb();
   },
 
-  logout: cb => {
+  signOut: cb => {
     removeCookie("access_token");
     removeCookie("refresh_token");
     removeCookie("user");

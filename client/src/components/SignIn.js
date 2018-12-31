@@ -39,20 +39,22 @@ export default class SignIn extends React.Component {
     axios
       .post("http://localhost:3001/auth/login", {
         username,
-        pwd: password,
+        pwd: password
         // type: 2
       })
       .then(resp => {
-        console.log(resp);
         const {
           status,
           data: { auth, access_token, refresh_token }
         } = resp;
         if (status === 200 && auth === true) {
-          authHelper.login(access_token, refresh_token);
+          authHelper.signIn(access_token, refresh_token);
           this.setState({ redirectToReferrer: true });
         } else {
-          throw new Error("Something wrong while signing in, status ", status);
+          throw new Error(
+            "Something went wrong when  signing in, status ",
+            status
+          );
         }
       })
       .catch(err => {
