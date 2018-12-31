@@ -59,11 +59,11 @@ exports.generateRefreshToken = () => {
 
 exports.updateRefreshToken = (userId, rfToken) => {
   return new Promise((resolve, reject) => {
-    var sql = `delete from userRefTokenExt where f_userId = '${userId}'`;
+    var sql = `delete from userreftokenext where f_userId = '${userId}'`;
     db.save(sql) // delete
       .then(value => {
         var rdt = moment().format("YYYY-MM-DD HH:mm:ss");
-        sql = `insert into userRefTokenExt values('${userId}', '${rfToken}', '${rdt}')`;
+        sql = `insert into userreftokenext values('${userId}', '${rfToken}', '${rdt}')`;
         return db.save(sql);
       })
       .then(value => resolve(value))
@@ -73,7 +73,7 @@ exports.updateRefreshToken = (userId, rfToken) => {
 
 exports.getNewAccessToken = rfToken => {
   return new Promise((resolve, reject) => {
-    var sql = `select f_userId from userRefTokenExt where f_refToken = '${rfToken}'`;
+    var sql = `select f_userId from userreftokenext where f_refToken = '${rfToken}'`;
     db.load(sql)
       .then(rows => {
         console.log("userID ->");
