@@ -91,7 +91,7 @@ export default class SignUp extends React.Component {
         justify="center"
         alignItems="center"
       >
-        <Paper className="form-panel sign-up">
+        <Paper className="form-panel sign-up paper">
           <div>
             <Typography variant="title" component="h1">
               INTERNET BANKING

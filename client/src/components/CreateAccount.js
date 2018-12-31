@@ -10,6 +10,7 @@ export default class CreateAccount extends Component {
     email: "",
     name: "",
     phone: "",
+    // for notify message
     isMessageOpen: false,
     messageType: "",
     message: ""
@@ -84,7 +85,10 @@ export default class CreateAccount extends Component {
             isMessageOpen: true,
             message: "Failed creating customer account"
           });
-          throw new Error("Something wrong while signing up, status ", status);
+          throw new Error(
+            "Something went wrong when  signing up, status ",
+            status
+          );
         }
       })
       .catch(err => {
@@ -106,7 +110,7 @@ export default class CreateAccount extends Component {
 
     return (
       <React.Fragment>
-        <Paper className="sign-up">
+        <Paper className="sign-up paper">
           <div>
             <Typography variant="title" component="h1">
               Create customer account
@@ -167,7 +171,7 @@ export default class CreateAccount extends Component {
                   fullWidth
                   onClick={this.handleSignUp}
                 >
-                  CREATE ACCOUNT
+                  create account
                 </Button>
               </div>
             </div>

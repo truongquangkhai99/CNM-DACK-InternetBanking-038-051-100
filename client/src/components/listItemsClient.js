@@ -5,7 +5,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
 import BarChartIcon from "@material-ui/icons/BarChart";
-import AssignmentIcon from "@material-ui/icons/Assignment";
+import PersonIcon from "@material-ui/icons/Person";
 
 export const mainListItems = (
   <div>
@@ -30,11 +30,13 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <div>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Log out" />
-    </ListItem>
+    <Link to="/sign-out">
+      <ListItem button>
+        <ListItemIcon>
+          <PersonIcon />
+        </ListItemIcon>
+        <ListItemText primary="Sign out" />
+      </ListItem>
+    </Link>
   </div>
 );

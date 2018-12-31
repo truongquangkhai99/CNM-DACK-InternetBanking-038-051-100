@@ -44,7 +44,7 @@ class Customers extends Component {
             message: "Failed getting customers list."
           });
           throw new Error(
-            "Something wrong while getting customers list, status ",
+            "Something went wrong when  getting customers list, status ",
             status
           );
         }
@@ -106,7 +106,7 @@ class Customers extends Component {
             message: "Failed creating payment account"
           });
           throw new Error(
-            "Something wrong while creating payment account, status ",
+            "Something went wrong when  creating payment account, status ",
             status
           );
         }
