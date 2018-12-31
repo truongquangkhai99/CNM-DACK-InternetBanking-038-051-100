@@ -270,8 +270,11 @@ class Customers extends Component {
   }
 }
 
-export default class CustomersContainer extends Component {
-  render() {
-    return <Dashboard screen={<Customers />} />;
-  }
-}
+// export default class CustomersContainer extends Component {
+//   render() {
+//     return <Dashboard screen={<Customers />} />;
+//   }
+// }
+
+export default Customers
+

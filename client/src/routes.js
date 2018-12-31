@@ -3,8 +3,10 @@ import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import SignIn from "./components/SignIn";
 // import SignUp from "./components/SignUp";
-import CustomersContainer from "./components/Customers";
+// import CustomersContainer from "./components/Customers";
 import PayAccContainer from "./components/PayAcc";
+import {CustomersContainer, InternalTransferContainer} from "./components/DashContainer";
+// import InternalTransferContainer from "./components/InternalTransfer";
 
 const routes = [
   {
@@ -36,6 +38,12 @@ const routes = [
     isPrivate: true,
     exact: true,
     comp: props => <PayAccContainer {...props} />
+  },
+  {
+    path: "/internal-transfers",
+    isPrivate: true,
+    exact: true,
+    comp: props => <InternalTransferContainer {...props} />
   },
   {
     path: "",
