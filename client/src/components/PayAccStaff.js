@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import axios from "axios";
 import { Button } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
-import Dashboard from "./Dashboard";
 import PayIn from "./PayIn";
 import Message from "./Message";
+import MustBeStaff from "./HOCs/MustBeStaff";
 
-class PayAcc extends Component {
+class PayAccStaff extends Component {
   state = {
     payAccs: [],
     // pay in panel
@@ -181,4 +181,4 @@ class PayAcc extends Component {
   }
 }
 
-export default PayAcc
+export default MustBeStaff(PayAccStaff);

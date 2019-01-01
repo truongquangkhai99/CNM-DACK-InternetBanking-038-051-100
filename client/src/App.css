@@ -68,20 +68,17 @@ a {
   margin-bottom: 20px;
 }
 
-.sign-up > div > div,
-.pay-in > div > div {
+.form-2-cols > div > div {
   display: inline-block;
   width: 50%;
   vertical-align: top;
 }
 
-.sign-up > div > div:first-of-type,
-.pay-in > div > div:first-of-type {
+.form-2-cols > div > div:first-of-type {
   padding-right: 15px;
 }
 
-.sign-up > div > div:last-of-type,
-.pay-in > div > div:last-of-type {
+.form-2-cols > div > div:last-of-type {
   padding-left: 15px;
 }
 
@@ -94,18 +91,16 @@ a {
     min-height: 100vh;
     width: 100%;
   }
-  .sign-up > div > div,
-  .pay-in > div > div {
+
+  .form-2-cols > div > div {
     display: initial;
   }
 
-  .sign-up > div > div:first-of-type,
-  .pay-in > div > div:first-of-type {
+  .form-2-cols > div > div:first-of-type {
     padding-right: 0;
   }
 
-  .sign-up > div > div:last-of-type,
-  .pay-in > div > div:last-of-type {
+  .form-2-cols > div > div:last-of-type {
     padding-left: 0;
   }
 }
@@ -120,6 +115,14 @@ a {
 
 .pay-in h1 {
   position: relative;
+}
+
+.inner-trans {
+  max-width: 921px;
+}
+
+.inner-trans > div > div:last-of-type > div:last-of-type {
+  margin-top: 35px;
 }
 
 .btn-close {

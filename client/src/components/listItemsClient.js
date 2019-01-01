@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import PeopleIcon from "@material-ui/icons/People";
-import BarChartIcon from "@material-ui/icons/BarChart";
-import PersonIcon from "@material-ui/icons/Person";
+import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import {
+  People as PeopleIcon,
+  BarChart as BarChartIcon,
+  Person as PersonIcon
+} from "@material-ui/icons";
 
 export const mainListItems = (
   <div>

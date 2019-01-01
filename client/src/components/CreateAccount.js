@@ -110,7 +110,7 @@ export default class CreateAccount extends Component {
 
     return (
       <React.Fragment>
-        <Paper className="sign-up paper">
+        <Paper className="sign-up paper form-2-cols">
           <div>
             <Typography variant="title" component="h1">
               Create customer account

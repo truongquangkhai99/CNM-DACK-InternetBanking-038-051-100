@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Button, Paper, TextField, Typography } from "@material-ui/core";
-import Icon from "@material-ui/core/Icon";
+import { Button, Paper, TextField, Typography, Icon } from "@material-ui/core";
 import Message from "./Message";
 
 export default class PayIn extends Component {
   state = {
-    payInAmount: 0,
+    payInAmount: "",
     // for notify message
     isMessageOpen: false,
     messageType: "",
@@ -39,7 +38,8 @@ export default class PayIn extends Component {
       currentBalance === null ||
       payInAmount === null ||
       isNaN(currentBalance) ||
-      isNaN(payInAmount)
+      isNaN(payInAmount) ||
+      payInAmount < 0
     )
       return this.setState({
         messageType: "warning",
@@ -65,7 +65,8 @@ export default class PayIn extends Component {
           this.setState({
             messageType: "success",
             isMessageOpen: true,
-            message: "The pay in has been succeed"
+            message: "The pay in has been succeed",
+            payInAmount: ""
           });
           this.props.onPayInSucceed();
         } else {
@@ -95,13 +96,13 @@ export default class PayIn extends Component {
   };
 
   render() {
-    const { isMessageOpen, messageType, message } = this.state;
+    const { isMessageOpen, messageType, message, payInAmount } = this.state;
 
     const { accNumber, clientName, clientEmail, currentBalance } = this.props;
 
     return (
       <React.Fragment>
-        <Paper className="paper pay-in">
+        <Paper className="paper pay-in form-2-cols">
           <div>
             <Typography variant="title" component="h1">
               Pay in{" "}
@@ -155,10 +156,12 @@ export default class PayIn extends Component {
                     id="payInAmount"
                     label="Amount *"
                     type="number"
+                    autoFocus
                     fullWidth
                     margin="normal"
                     onChange={this.handleInputChange}
                     name="payInAmount"
+                    value={payInAmount}
                   />
                 </div>
                 <div>

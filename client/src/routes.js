@@ -3,14 +3,11 @@ import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import SignIn from "./components/SignIn";
 import SignOut from "./components/SignOut";
-// import SignUp from "./components/SignUp";
-// import CustomersContainer from "./components/Customers";
-// import PayAccContainer from "./components/PayAcc";
-// import InternalTransferContainer from "./components/InternalTransfer";
 import {
   CustomersContainer,
   InternalTransferContainer,
-  PayAccContainer
+  PayAccClientContainer,
+  PayAccStaffContainer
 } from "./components/DashContainer";
 
 const routes = [
@@ -48,13 +45,25 @@ const routes = [
     path: "/payment-accounts",
     isPrivate: true,
     exact: true,
-    comp: props => <PayAccContainer {...props} />
+    comp: props => <PayAccClientContainer {...props} />
+  },
+  {
+    path: "/payment-accounts-staff",
+    isPrivate: true,
+    exact: true,
+    comp: props => <PayAccStaffContainer {...props} />
   },
   {
     path: "/internal-transfers",
     isPrivate: true,
     exact: true,
     comp: props => <InternalTransferContainer {...props} />
+  },
+  {
+    path: "/somewhere-the-God-only-knows",
+    isPrivate: false,
+    exact: false,
+    comp: props => <NotFound />
   },
   {
     path: "",

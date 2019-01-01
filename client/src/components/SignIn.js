@@ -3,14 +3,14 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
 import Recaptcha from "react-recaptcha";
-import authHelper from "../utils/authHelper";
+import { checkAuth, signIn } from "../utils/authHelper";
 
 export default class SignIn extends React.Component {
   state = {
     captcha: false,
     username: "",
     password: "",
-    redirectToReferrer: false
+    redirectToReferrer: checkAuth()
   };
 
   componentDidMount() {
@@ -31,7 +31,7 @@ export default class SignIn extends React.Component {
   handleSignIn = () => {
     const { username, password, captcha } = this.state;
     // validate captcha
-    if (captcha === false) return;
+    // if (captcha === false) return;
     // validate username, password
     if (username === "" || password === "") return;
 
@@ -48,7 +48,7 @@ export default class SignIn extends React.Component {
           data: { auth, access_token, refresh_token }
         } = resp;
         if (status === 200 && auth === true) {
-          authHelper.signIn(access_token, refresh_token);
+          signIn(access_token, refresh_token);
           this.setState({ redirectToReferrer: true });
         } else {
           throw new Error(

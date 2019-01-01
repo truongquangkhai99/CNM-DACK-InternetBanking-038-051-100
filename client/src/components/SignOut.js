@@ -1,8 +1,8 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import authHelper from "../utils/authHelper";
+import { signOut } from "../utils/authHelper";
 
 export default function SignOut() {
-  authHelper.signOut();
+  signOut();
   return <Redirect to="/sign-in" />;
 }

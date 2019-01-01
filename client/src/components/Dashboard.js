@@ -2,19 +2,30 @@ import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import { mainListItems as mainListItemsStaff, secondaryListItems as secondaryListItemsStaff } from "./listItemsStaff";
-import { mainListItems as mainListItemsClient, secondaryListItems as secondaryListItemsClient } from "./listItemsClient";
-import authHelper from "../utils/authHelper"
+import {
+  CssBaseline,
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  Typography,
+  Divider,
+  IconButton
+} from "@material-ui/core";
+import {
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon
+} from "@material-ui/icons";
+import LetterAvatar from "./LetterAvatar";
+import {
+  mainListItems as mainListItemsStaff,
+  secondaryListItems as secondaryListItemsStaff
+} from "./listItemsStaff";
+import {
+  mainListItems as mainListItemsClient,
+  secondaryListItems as secondaryListItemsClient
+} from "./listItemsClient";
+import { getUserInfo } from "../utils/authHelper";
 
 const drawerWidth = 240;
 
@@ -92,6 +103,10 @@ const styles = theme => ({
   },
   h5: {
     marginBottom: theme.spacing.unit * 2
+  },
+  userAvatar: {
+    position: "absolute",
+    right: 10
   }
 });
 
@@ -109,7 +124,9 @@ class Dashboard extends React.Component {
   };
 
   render() {
-    const { classes, screen } = this.props;
+    const { classes, screen, title } = this.props;
+    const userType = getUserInfo("f_type");
+
     return (
       <div className={classes.root}>
         <CssBaseline />
@@ -142,8 +159,9 @@ class Dashboard extends React.Component {
               noWrap
               className={classes.title}
             >
-              Dashboard
+              {title !== undefined ? title : "Dashboard"}
             </Typography>
+            <LetterAvatar className="userAvatar" />
           </Toolbar>
         </AppBar>
         <Drawer
@@ -162,9 +180,15 @@ class Dashboard extends React.Component {
             </IconButton>
           </div>
           <Divider />
-          <List>{authHelper.getUserEntity() !== "" && authHelper.getUserEntity().f_type === 2 ? mainListItemsStaff: mainListItemsClient}</List>
+          <List>
+            {userType === 2 ? mainListItemsStaff : mainListItemsClient}
+          </List>
           <Divider />
-          <List>{authHelper.getUserEntity() !== "" && authHelper.getUserEntity().f_type === 2 ? secondaryListItemsStaff: secondaryListItemsClient}</List>
+          <List>
+            {userType === 2
+              ? secondaryListItemsStaff
+              : secondaryListItemsClient}
+          </List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />

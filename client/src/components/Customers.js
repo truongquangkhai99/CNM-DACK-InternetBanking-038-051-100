@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import axios from "axios";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
-import Dashboard from "./Dashboard";
 import Message from "./Message";
 import CreateAccount from "./CreateAccount";
+import MustBeStaff from "./HOCs/MustBeStaff";
 
 class Customers extends Component {
   state = {
@@ -202,7 +204,7 @@ class Customers extends Component {
           options={options}
         />
 
-        {/* dialog confirm creating new payment account */}
+        {/* dialog to confirm creating new payment account */}
         <Dialog
           open={isDialogOpen}
           onClose={this.handleCloseDialog}
@@ -229,7 +231,7 @@ class Customers extends Component {
           </DialogActions>
         </Dialog>
 
-        {/* dialog notify newly created payment account number */}
+        {/* dialog to notify newly created payment account number */}
         <Dialog
           open={isDialogPayAccOpen}
           onClose={this.handleCloseDialogPayAcc}
@@ -270,5 +272,4 @@ class Customers extends Component {
   }
 }
 
-export default Customers
-
+export default MustBeStaff(Customers);

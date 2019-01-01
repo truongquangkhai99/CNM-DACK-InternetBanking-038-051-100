@@ -185,7 +185,7 @@ export default class SignUp extends React.Component {
                   fullWidth
                   onClick={this.handleSignUp}
                 >
-                  SIGN UP
+                  sign up
                 </Button>
               </div>
               <div>

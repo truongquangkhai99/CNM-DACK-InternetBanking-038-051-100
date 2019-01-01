@@ -1,93 +1,270 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import LockIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
+import React, { Component } from "react";
+import axios from "axios";
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField
+} from "@material-ui/core";
+import Message from "./Message";
+import MustBeCustomer from "./HOCs/MustBeCustomer";
+import { getUserInfo } from "../utils/authHelper";
 
-const styles = theme => ({
-  main: {
-    width: 'auto',
-    display: 'block', // Fix IE 11 issue.
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-      width: 400,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  paper: {
-    marginTop: theme.spacing.unit * 8,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-  },
-  avatar: {
-    margin: theme.spacing.unit,
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
-  },
-  submit: {
-    marginTop: theme.spacing.unit * 3,
-  },
-});
+class InternalTransfer extends Component {
+  state = {
+    payAccs: [],
+    payAccId: "",
+    currentBalance: 0,
+    // for notify message
+    isMessageOpen: false,
+    messageType: "",
+    message: "",
+    destPayAccId: "",
+    transferAmount: "",
+    transferMsg: "",
+    feePaymentType: "transferer",
+    OTP: ""
+  };
 
-function SignIn(props) {
-  const { classes } = props;
+  componentDidMount = () => {
+    const customerId = getUserInfo("f_id");
 
-  return (
-    <main className={classes.main}>
-      <CssBaseline />
-      <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        <form className={classes.form}>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="email">Email Address</InputLabel>
-            <Input id="email" name="email" autoComplete="email" autoFocus />
-          </FormControl>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="password">Password</InputLabel>
-            <Input name="password" type="password" id="password" autoComplete="current-password" />
-          </FormControl>
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign in
-          </Button>
-        </form>
-      </Paper>
-    </main>
-  );
+    if (customerId === null)
+      return this.setState({
+        messageType: "error",
+        isMessageOpen: true,
+        message: "Sorry, could not get user entity, please sign in again"
+      });
+
+    axios
+      .get(`http://localhost:3001/pay-accs/${customerId}`)
+      .then(resp => {
+        const { status, data: payAccs } = resp;
+        if (status === 200 && payAccs.length > 0) {
+          // default selected payment account
+          this.setState({
+            payAccs,
+            payAccId: payAccs[0].id,
+            currentBalance: payAccs[0].balance
+          });
+        } else {
+          this.setState({
+            messageType: "error",
+            isMessageOpen: true,
+            message: "Sorry, failed getting your payment accounts list"
+          });
+          throw new Error(
+            "Something went wrong when getting payment accounts list, status ",
+            status
+          );
+        }
+      })
+      .catch(err => {
+        this.setState({
+          messageType: "error",
+          isMessageOpen: true,
+          message: "Sorry, failed getting your payment accounts list"
+        });
+        console.log(err);
+      });
+  };
+
+  handleInputChange = e => {
+    const { name, value } = e.target;
+    if (name === "payAccId")
+      return this.setState({
+        [name]: value,
+        currentBalance: this.state.payAccs.find(payAcc => payAcc.id === value)
+          .balance
+      });
+    this.setState({ [name]: value });
+  };
+
+  handleCloseMessage = () => {
+    this.setState({ isMessageOpen: false });
+  };
+
+  handleSendOTP = () => {};
+
+  handleTransfer = () => {
+    const {
+      payAccId,
+      destPayAccId,
+      transferAmount,
+      transferMsg,
+      feePaymentType,
+      OTP
+    } = this.state;
+
+    if (
+      payAccId === "" ||
+      destPayAccId === "" ||
+      transferMsg === "" ||
+      OTP === ""
+    )
+      return this.setState({
+        messageType: "warning",
+        isMessageOpen: true,
+        message: "Please check if any required field were empty"
+      });
+
+    if (transferAmount < 1)
+      return this.setState({
+        messageType: "warning",
+        isMessageOpen: true,
+        message: "The amount must be greater than 0"
+      });
+
+    console.log(
+      payAccId,
+      destPayAccId,
+      transferAmount,
+      transferMsg,
+      feePaymentType,
+      OTP
+    );
+  };
+
+  render() {
+    const {
+      payAccs,
+      payAccId,
+      currentBalance,
+      isMessageOpen,
+      messageType,
+      message,
+      feePaymentType
+    } = this.state;
+
+    return (
+      <React.Fragment>
+        <Grid container direction="row" justify="center" alignItems="center">
+          <Paper className="paper inner-trans form-2-cols">
+            <div>
+              <div>
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="payAccId">
+                    Payments accounts list
+                  </InputLabel>
+                  {payAccId !== "" && (
+                    <Select
+                      value={payAccId}
+                      onChange={this.handleInputChange}
+                      inputProps={{
+                        name: "payAccId",
+                        id: "payAccId"
+                      }}
+                    >
+                      {payAccs.map((payAcc, index) => (
+                        <MenuItem key={index} value={payAcc.id}>
+                          {payAcc.accNumber}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                  <FormHelperText>
+                    Current balance: {currentBalance}
+                  </FormHelperText>
+                </FormControl>
+                <TextField
+                  id="destPayAccId"
+                  label="Number account of receiver *"
+                  type="number"
+                  autoFocus
+                  fullWidth
+                  margin="normal"
+                  onChange={this.handleInputChange}
+                  name="destPayAccId"
+                />
+                <TextField
+                  id="transferAmount"
+                  label="Amount *"
+                  type="number"
+                  fullWidth
+                  margin="normal"
+                  onChange={this.handleInputChange}
+                  name="transferAmount"
+                />
+                <TextField
+                  id="transferMsg"
+                  label="Message *"
+                  fullWidth
+                  margin="normal"
+                  onChange={this.handleInputChange}
+                  name="transferMsg"
+                />
+              </div>
+              <div>
+                <div style={{ textAlign: "left" }}>
+                  <FormControl component="div">
+                    <FormLabel component="legend">Fee payment type</FormLabel>
+                    <RadioGroup
+                      aria-label="Fee payment type"
+                      name="feePaymentType"
+                      value={feePaymentType}
+                      onChange={this.handleInputChange}
+                    >
+                      <FormControlLabel
+                        value="transferer"
+                        control={<Radio />}
+                        label="Transferer"
+                      />
+                      <FormControlLabel
+                        value="receiver"
+                        control={<Radio />}
+                        label="Receiver"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+                <div>
+                  <TextField
+                    id="OTP"
+                    label="OTP *"
+                    fullWidth
+                    margin="normal"
+                    onChange={this.handleInputChange}
+                    name="OTP"
+                  />
+                  <FormHelperText
+                    onClick={this.handleSendOTP}
+                    style={{ cursor: "pointer", color: "CornflowerBlue" }}
+                  >
+                    Send OTP
+                  </FormHelperText>
+                </div>
+                <div>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    onClick={this.handleTransfer}
+                  >
+                    transfer
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Paper>
+        </Grid>
+        <Message
+          variant={messageType}
+          message={message}
+          open={isMessageOpen}
+          onClose={this.handleCloseMessage}
+        />
+      </React.Fragment>
+    );
+  }
 }
 
-SignIn.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(SignIn);
+export default MustBeCustomer(InternalTransfer);
