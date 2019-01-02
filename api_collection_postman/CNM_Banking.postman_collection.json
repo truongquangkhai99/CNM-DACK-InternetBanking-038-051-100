@@ -87,7 +87,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"customerId\": \"8yZfAOq1pm\",\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach1\"\n}"
+					"raw": "{\n\t\"customerId\": \"8yZfAOq1pm\",\n    \"clientEmail\": \"songvancam@gmail.com\",\n    \"clientName\": \"khach1\",\n    \"phone\": \"06983544\"\n}"
 				},
 				"url": {
 					"raw": "localhost:3001/pay-acc",

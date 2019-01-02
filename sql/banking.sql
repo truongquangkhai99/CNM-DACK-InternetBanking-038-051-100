@@ -40,7 +40,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES ('gCiKoYZ5-','RS9vvnjvYR','91538945','123','2019-01-02 11:54'),('ZYptfAhKx','RS9vvnjvYR','91538945','123431513','2019-01-02 11:54');
+INSERT INTO `history` VALUES ('gCiKoYZ5-','RS9vvnjvYR','91538945','123','2019-01-02 11:54'),('syg5KrWQK','RS9vvnjvYR','91538945','123431513','2019-01-02 12:26'),('ZYptfAhKx','RS9vvnjvYR','91538945','123431513','2019-01-02 11:54');
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,9 +56,11 @@ CREATE TABLE `payacc` (
   `customerId` varchar(45) NOT NULL,
   `clientEmail` varchar(45) NOT NULL,
   `clientName` varchar(45) NOT NULL,
+  `phone` varchar(45) NOT NULL,
   `accNumber` varchar(45) NOT NULL,
   `balance` varchar(45) NOT NULL,
-  `createdAt` varchar(45) DEFAULT NULL,
+  `status` varchar(45) NOT NULL,
+  `createdAt` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -69,7 +71,7 @@ CREATE TABLE `payacc` (
 
 LOCK TABLES `payacc` WRITE;
 /*!40000 ALTER TABLE `payacc` DISABLE KEYS */;
-INSERT INTO `payacc` VALUES ('-Qh5Vpqew','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','85020173','2000','2018-12-31 09:45'),('avVPUBuDR','8yZfAOq1pm','songvancam@gmail.com','khach1','87240963','1202020','2018-12-30 15:36'),('g-glCUcHA','oOyRmS5bjC','taulakhach@gmail.com','customer2','98592933','0','2019-01-02 10:14'),('HpkAfQDxN','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','83383813','41341','2018-12-31 01:25'),('LHeouDxxR','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','26834461','0','2018-12-31 01:24'),('Sn7zMmVFP','oOyRmS5bjC','taulakhach@gmail.com','customer2','91538945','123','2018-12-31 01:24');
+INSERT INTO `payacc` VALUES ('-Qh5Vpqew','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','06983544','85020173','2000','OPEN','2018-12-31 09:45'),('-wvMpkUZE','8yZfAOq1pm','songvancam@gmail.com','khach1','06983544','44654942','0','OPEN','2019-01-02 12:38'),('avVPUBuDR','8yZfAOq1pm','songvancam@gmail.com','khach1','06983544','87240963','1202020','OPEN','2018-12-30 15:36'),('g-glCUcHA','oOyRmS5bjC','taulakhach@gmail.com','customer2','06983544','98592933','0','OPEN','2019-01-02 10:14'),('HpkAfQDxN','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','06983544','83383813','41341','OPEN','2018-12-31 01:25'),('I7tJtF8pH','8yZfAOq1pm','songvancam@gmail.com','khach1','06983544','16294995','0','OPEN','2019-01-02 12:36'),('LHeouDxxR','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','06983544','26834461','0','OPEN','2018-12-31 01:24'),('LhSB6X-xW','8yZfAOq1pm','songvancam@gmail.com','khach1','06983544','47046880','0','OPEN','2019-01-02 12:37'),('Sn7zMmVFP','oOyRmS5bjC','taulakhach@gmail.com','customer2','06983544','91538945','123','OPEN','2018-12-31 01:24');
 /*!40000 ALTER TABLE `payacc` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,4 +144,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-02 11:57:38
+-- Dump completed on 2019-01-02 12:38:59

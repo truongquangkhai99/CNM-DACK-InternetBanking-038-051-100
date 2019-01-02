@@ -2,6 +2,7 @@ var express = require("express");
 var shortid = require("shortid");
 var moment = require("moment");
 var _ = require("lodash");
+var { PAY_ACC_STATUS_OPEN, PAY_ACC_STATUS_CLOSED } = require("../fn/constant");
 
 var payAccRepo = require("../repos/payAccRepo");
 
@@ -15,7 +16,7 @@ router.get("/pay-accs", (req, res) => {
       // res.json(rows);
       res.send(
         _.sortBy(JSON.parse(JSON.stringify(rows)), [
-          function(o) {
+          function (o) {
             return o.createdAt;
           }
         ]).reverse()
@@ -29,7 +30,7 @@ router.get("/pay-accs", (req, res) => {
 });
 
 router.get("/pay-accs/:customerId", (req, res) => {
-  const {customerId} = req.params;
+  const { customerId } = req.params;
 
   payAccRepo
     .loadByCustomerId(customerId)
@@ -38,7 +39,7 @@ router.get("/pay-accs/:customerId", (req, res) => {
       // res.json(rows);
       res.send(
         _.sortBy(JSON.parse(JSON.stringify(rows)), [
-          function(o) {
+          function (o) {
             return o.createdAt;
           }
         ]).reverse()
@@ -58,6 +59,8 @@ router.post("/pay-acc", (req, res) => {
   _payAcc.createdAt = moment().format("YYYY-MM-DD HH:mm");
   // số dư mặc định là  0
   _payAcc.balance = 0;
+  // trạng thái mặc định là OPEN
+  _payAcc.status = PAY_ACC_STATUS_OPEN;
   // số tài khoản gồm 8 chữ số
   _payAcc.accNumber = require("rand-token")
     .generator({
@@ -109,7 +112,7 @@ router.patch("/pay-acc/balance", (req, res) => {
 
 
 router.get("/pay-acc/:accNumber", (req, res) => {
-  const {accNumber} = req.params;
+  const { accNumber } = req.params;
   payAccRepo
     .loadByAccNumber(accNumber)
     .then(rows => {

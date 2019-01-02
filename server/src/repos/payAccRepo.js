@@ -6,14 +6,16 @@ exports.add = payAccEntity => {
     customerId,
     clientEmail,
     clientName,
+    phone,
     accNumber,
     balance,
+    status,
     createdAt
   } = payAccEntity;
 
   const sql =
-    "insert into `payacc`(`id`, `customerId`, `clientEmail`, `clientName`, `accNumber`, `balance`, `createdAt`)" +
-    `values('${id}', '${customerId}', '${clientEmail}','${clientName}','${accNumber}','${balance}', '${createdAt}');`;
+    "insert into `payacc`(`id`, `customerId`, `clientEmail`, `clientName`, `phone`, `accNumber`, `balance`, `status`, `createdAt`)" +
+    `values('${id}', '${customerId}', '${clientEmail}','${clientName}','${phone}','${accNumber}','${balance}', '${status}', '${createdAt}');`;
   return db.save(sql);
 };
 
