@@ -18,6 +18,7 @@ import MustBeCustomer from "./HOCs/MustBeCustomer";
 class PayAccClient extends Component {
   state = {
     payAccs: [],
+    histories: [],
     // pay in panel
     payAccId: "",
     accNumber: "",
@@ -131,7 +132,36 @@ class PayAccClient extends Component {
         message: "Sorry, failed getting this payment account information"
       });
 
-    this.setState({ isDialogHistoryPayAccOpen: true, accNumber });
+    axios
+      .get(`http://localhost:3001/histories/${payAccId}`)
+      .then(resp => {
+        const { status, data: histories } = resp;
+        if (status === 200) {
+          this.setState({
+            histories,
+            isDialogHistoryPayAccOpen: true,
+            accNumber
+          });
+        } else {
+          this.setState({
+            messageType: "error",
+            isMessageOpen: true,
+            message: `Sorry, failed getting history of payment account #${accNumber}`
+          });
+          throw new Error(
+            "Something went wrong getting history of payment account, status ",
+            status
+          );
+        }
+      })
+      .catch(err => {
+        this.setState({
+          messageType: "error",
+          isMessageOpen: true,
+          message: `Sorry, failed getting history of payment account #${accNumber}`
+        });
+        console.log(err);
+      });
   };
 
   handleCloseHistoryPayAccDialog = () => {
@@ -149,6 +179,7 @@ class PayAccClient extends Component {
   render() {
     const {
       payAccs,
+      histories,
       payAccId,
       accNumber,
       currentBalance,
@@ -239,6 +270,35 @@ class PayAccClient extends Component {
           rowsPerPage: 5,
           rowsPerPageOptions: [5, 10, 15]
         }
+      },
+      payAccHistory: {
+        data: histories.map((history, index) => {
+          const { toAccNumber, amount, feeType, createdAt } = history;
+          return [
+            index + 1,
+            toAccNumber,
+            amount,
+            +feeType === 1 ? "Sender" : "Receiver",
+            createdAt
+          ];
+        }),
+        columns: [
+          "#",
+          "Receiver account number",
+          "Amount",
+          "Fee type",
+          "Date time"
+        ],
+        options: {
+          selectableRows: false,
+          responsive: "scroll",
+          print: false,
+          download: false,
+          viewColumns: false,
+          filter: false,
+          rowsPerPage: 5,
+          rowsPerPageOptions: [5, 10]
+        }
       }
     };
 
@@ -315,14 +375,16 @@ class PayAccClient extends Component {
           onClose={this.handleCloseHistoryPayAccDialog}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          fullWidth={true}
+          maxWidth={"md"}
         >
-          <DialogTitle id="alert-dialog-title">
-            {`Recent history of payment account #${accNumber}`}
-          </DialogTitle>
-          <DialogContent
-            style={{ width: "600px", height: "auto", maxHeight: "1000px" }}
-          >
-            <React.Fragment />
+          <DialogContent>
+            <MUIDataTable
+              title={`Recent activities of payment account #${accNumber}`}
+              data={MUIDataTableInfo.payAccHistory.data}
+              columns={MUIDataTableInfo.payAccHistory.columns}
+              options={MUIDataTableInfo.payAccHistory.options}
+            />
           </DialogContent>
           <DialogActions>
             <Button
