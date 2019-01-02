@@ -126,6 +126,49 @@ router.get("/pay-acc/:accNumber", (req, res) => {
     });
 });
 
+router.get("/pay-accs/status/open", (req, res) => {
+  payAccRepo
+    .loadByOpen(PAY_ACC_STATUS_OPEN)
+    .then(rows => {
+      res.statusCode = 200;
+      // console.log(rows.length);
+      res.json({
+        "number_of_open": rows.length,
+        rows
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.statusCode = 500;
+      res.end("View error log on console");
+    });
+});
 
+router.patch("/pay-acc/status/closed", (req, res) => {
+  const payAccId = req.body.payAccId;
+  const newStatus = PAY_ACC_STATUS_CLOSED;
+  const newBalance = '0';
+
+  const payAccEntity = {
+    payAccId,
+    newStatus,
+    newBalance
+  }
+
+  payAccRepo
+    .UpdateStatusById(payAccEntity)
+    .then(result => {
+      console.log(result);
+      res.statusCode = 201;
+      res.json({
+        status: "OK"
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.statusCode = 500;
+      res.end("View error log on console");
+    });
+});
 
 module.exports = router;

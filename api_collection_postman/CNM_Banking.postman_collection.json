@@ -298,14 +298,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:3001/histories/RS9vvnjvYR",
+					"raw": "localhost:3001/histories/-Qh5Vpqew",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
 						"histories",
-						"RS9vvnjvYR"
+						"-Qh5Vpqew"
 					]
 				},
 				"description": "lấy danh sách lịch sử giao dịch của customerId"
@@ -314,9 +314,19 @@
 		},
 		{
 			"name": "localhost:3001/pay-accs/status/open",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": ""
@@ -334,6 +344,38 @@
 					]
 				},
 				"description": "trả về số lượng payacc open + mảng các payacc open"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/pay-acc/status/closed",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"payAccId\": \"avVPUBuDR\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/pay-acc/status/closed",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"pay-acc",
+						"status",
+						"closed"
+					]
+				},
+				"description": "Update status của payacc thành CLOSED và balance của nó thành 0 (dùng để đóng tài khoản)"
 			},
 			"response": []
 		}

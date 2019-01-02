@@ -43,3 +43,21 @@ exports.loadByAccNumber = accNumber => {
   var sql = `select * from payacc where accNumber = '${accNumber}'`;
   return db.load(sql);
 };
+
+
+exports.loadByOpen = openStatus => {
+  var sql = `select * from payacc where status = '${openStatus}'`;
+  return db.load(sql);
+};
+
+exports.UpdateStatusById = payAccEntity => {
+  const { payAccId, newBalance, newStatus } = payAccEntity;
+  var sql =
+    "update payacc set balance = " +
+    `'${newBalance}'` +
+    " , status = " +
+    `'${newStatus}'` +
+    " where id=" +
+    `'${payAccId}';`;
+  return db.save(sql);
+};
