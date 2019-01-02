@@ -22,7 +22,7 @@ function LetterAvatar(props) {
 
   const letters = name
     .split(" ")
-    .map(word => word[0])
+    .map(word => word[0].toUpperCase())
     .join("");
 
   if (letters.length === 1)

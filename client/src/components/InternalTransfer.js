@@ -37,40 +37,43 @@ class InternalTransfer extends Component {
     isMessageOpen: false,
     messageType: "",
     message: "",
-    destPayAccNumber: "",
-    destName: "",
-    destEmail: "",
-    destPhone: "",
+    receiverPayAccNumber: "",
+    receiverName: "",
+    receiverEmail: "",
+    receiverPhone: "",
     transferAmount: "",
-    transferAmountWarning: false,
     transferMsg: "",
-    feePaymentType: "transferer",
+    feeType: 1,
     isDialogOTPOpen: false,
-    OTP: ""
+    OTP: "",
+    checkOTP: null
   };
 
-  componentDidMount = () => {
+  getPayAccsList = () => {
     const customerId = getUserInfo("f_id");
 
     if (customerId === null)
       return this.setState({
         messageType: "error",
         isMessageOpen: true,
-        message: "Sorry, could not get user entity, please sign in again"
+        message: "Sorry, could not get your entity, please sign in again"
       });
 
     axios
       .get(`http://localhost:3001/pay-accs/${customerId}`)
       .then(resp => {
-        const { status, data: payAccs } = resp;
-        if (status === 200 && payAccs.length > 0) {
-          // default selected payment account
-          this.setState({
-            payAccs,
-            payAccId: payAccs[0].id,
-            accNumber: payAccs[0].accNumber,
-            currentBalance: payAccs[0].balance
-          });
+        const { status, data } = resp;
+        if (status === 200) {
+          // only accounts with balance > 0
+          const payAccs = data.filter(payAcc => +payAcc.balance > 0);
+          if (payAccs.length > 0)
+            // default selected payment account
+            this.setState({
+              payAccs,
+              payAccId: payAccs[0].id,
+              accNumber: payAccs[0].accNumber,
+              currentBalance: payAccs[0].balance
+            });
         } else {
           this.setState({
             messageType: "error",
@@ -93,6 +96,10 @@ class InternalTransfer extends Component {
       });
   };
 
+  componentDidMount = () => {
+    this.getPayAccsList();
+  };
+
   handleInputChange = e => {
     const { name, value } = e.target;
     if (name === "payAccId")
@@ -101,12 +108,6 @@ class InternalTransfer extends Component {
         currentBalance: this.state.payAccs.find(payAcc => payAcc.id === value)
           .balance
       });
-
-    if (name === "transferAmount")
-      if (+value > +this.state.currentBalance)
-        return this.setState({ transferAmountWarning: true, [name]: value });
-      else
-        return this.setState({ transferAmountWarning: false, [name]: value });
 
     this.setState({ [name]: value });
   };
@@ -119,47 +120,143 @@ class InternalTransfer extends Component {
     this.setState({ isDialogOTPOpen: false });
   };
 
-  handleSendOTP = () => {};
-
   handleOpenOTPDialog = () => {
+    const clientName = getUserInfo("f_name"),
+      clientEmail = getUserInfo("f_email");
+
+    const { receiverPayAccNumber } = this.state;
+
+    if (clientName === null || clientEmail === null)
+      return this.setState({
+        messageType: "error",
+        isMessageOpen: true,
+        message:
+          "Sorry, failed getting your entity, please sign in or try again later"
+      });
+
+    axios
+      .all([
+        axios.post("http://localhost:3001/send-otp", {
+          clientEmail,
+          clientName
+        }),
+        axios.get(`http://localhost:3001/pay-acc/${receiverPayAccNumber}`)
+      ])
+      .then(
+        axios.spread((getOTP, getReceiver) => {
+          if (getOTP.status !== 201) {
+            this.setState({
+              messageType: "error",
+              isMessageOpen: true,
+              message:
+                "Sorry, failed sending request for OTP, please try again later"
+            });
+            throw new Error(
+              "Something went wrong when requesting for OTP, status ",
+              getOTP.status
+            );
+          }
+
+          if (getReceiver.status !== 200) {
+            this.setState({
+              messageType: "error",
+              isMessageOpen: true,
+              message:
+                "Sorry, failed getting receiver details , please try again later"
+            });
+            throw new Error(
+              "Something went wrong when getting receiver details, status ",
+              getOTP.status
+            );
+          }
+
+          const {
+            data: { otp: checkOTP }
+          } = getOTP;
+
+          if (getReceiver.data.length < 1)
+            return this.setState({
+              messageType: "warning",
+              isMessageOpen: true,
+              message: `No payment account attached to ${receiverPayAccNumber}, please try another one`
+            });
+
+          const {
+            clientName: receiverName,
+            clientEmail: receiverEmail,
+            phone: receiverPhone
+          } = getReceiver.data[0];
+
+          this.setState({
+            checkOTP,
+            receiverName,
+            receiverEmail,
+            receiverPhone,
+            receiverPayAccNumber,
+            isDialogOTPOpen: true
+          });
+        })
+      )
+      .catch(err => {
+        this.setState({
+          messageType: "error",
+          isMessageOpen: true,
+          message:
+            "Sorry, failed sending request for OTP or getting receiver details, please try again later"
+        });
+        console.log(err);
+      });
+  };
+
+  handleTransfer = () => {
+    // check inputs
+    // call API
+    // succeed
+    this.setState(
+      {
+        isDialogOTPOpen: false,
+        messageType: "success",
+        isMessageOpen: true,
+        message: "Successfully operated the transaction",
+        // reset form
+        receiverPayAccNumber: "",
+        transferAmount: "",
+        transferMsg: "",
+        OTP: "",
+        checkOTP: "",
+        feeType: 1
+      }, // refresh payment accounts
+      this.getPayAccsList
+    );
+  };
+
+  checkValidInputs = () => {
     const {
-      payAccId,
-      destPayAccNumber,
+      payAccs,
+      currentBalance,
+      receiverPayAccNumber,
       transferAmount,
       transferMsg
     } = this.state;
 
-    if (payAccId === "" || destPayAccNumber === "" || transferMsg === "")
-      return this.setState({
-        messageType: "warning",
-        isMessageOpen: true,
-        message: "Please check if any required field were empty"
-      });
+    if (receiverPayAccNumber === "") return true;
 
-    if (transferAmount < 1)
-      return this.setState({
-        messageType: "warning",
-        isMessageOpen: true,
-        message: "The amount must be greater than 0"
-      });
+    if (
+      transferAmount === "" ||
+      transferAmount < 1 ||
+      +transferAmount > +currentBalance
+    )
+      return true;
 
-    this.setState({ isDialogOTPOpen: true });
-  };
+    if (transferMsg === "") return true;
 
-  handleTransfer = () => {
-    const { OTP } = this.state;
+    if (
+      payAccs.length > 0 &&
+      payAccs.map(payAcc => payAcc.accNumber).includes(receiverPayAccNumber)
+    )
+      return true;
 
-    if (OTP === "")
-      return this.setState({
-        messageType: "warning",
-        isMessageOpen: true,
-        message: "Please check if OTP were not entered"
-      });
-
-    console.log(OTP);
-
-    // close dialog
-    this.setState({ isDialogOTPOpen: false });
+    return false;
   };
 
   render() {
@@ -168,16 +265,19 @@ class InternalTransfer extends Component {
       payAccId,
       accNumber,
       currentBalance,
-      transferAmountWarning,
-      destName,
-      destEmail,
-      destPhone,
-      destPayAccNumber,
+      transferAmount,
+      transferMsg,
+      receiverName,
+      receiverEmail,
+      receiverPhone,
+      receiverPayAccNumber,
       isMessageOpen,
       messageType,
       message,
-      feePaymentType,
-      isDialogOTPOpen
+      feeType,
+      isDialogOTPOpen,
+      OTP,
+      checkOTP
     } = this.state;
 
     return (
@@ -236,14 +336,23 @@ class InternalTransfer extends Component {
                     </FormHelperText>
                   </FormControl>
                   <TextField
-                    id="destPayAccNumber"
-                    label="Number account of receiver *"
+                    id="receiverPayAccNumber"
+                    label="Account number of receiver *"
                     autoFocus
                     fullWidth
                     margin="normal"
                     onChange={this.handleInputChange}
-                    name="destPayAccNumber"
+                    name="receiverPayAccNumber"
+                    value={receiverPayAccNumber}
                   />
+                  {payAccs
+                    .map(payAcc => payAcc.accNumber)
+                    .includes(receiverPayAccNumber) && (
+                    <FormHelperText style={{ color: "red" }}>
+                      Cannot make this transaction type for your own payment
+                      accounts
+                    </FormHelperText>
+                  )}
                   <TextField
                     id="transferAmount"
                     label="Amount *"
@@ -252,8 +361,9 @@ class InternalTransfer extends Component {
                     margin="normal"
                     onChange={this.handleInputChange}
                     name="transferAmount"
+                    value={transferAmount}
                   />
-                  {transferAmountWarning && (
+                  {+transferAmount > +currentBalance && (
                     <FormHelperText style={{ color: "red" }}>
                       Amount of the transaction is greater than current balance
                     </FormHelperText>
@@ -265,6 +375,7 @@ class InternalTransfer extends Component {
                     margin="normal"
                     onChange={this.handleInputChange}
                     name="transferMsg"
+                    value={transferMsg}
                   />
                 </div>
                 <div>
@@ -273,17 +384,17 @@ class InternalTransfer extends Component {
                       <FormLabel component="legend">Fee payment type</FormLabel>
                       <RadioGroup
                         aria-label="Fee payment type"
-                        name="feePaymentType"
-                        value={feePaymentType}
+                        name="feeType"
+                        value={feeType}
                         onChange={this.handleInputChange}
                       >
                         <FormControlLabel
-                          value="transferer"
+                          value={1}
                           control={<Radio />}
-                          label="Transferer"
+                          label="Sender"
                         />
                         <FormControlLabel
-                          value="receiver"
+                          value={2}
                           control={<Radio />}
                           label="Receiver"
                         />
@@ -296,6 +407,7 @@ class InternalTransfer extends Component {
                       color="primary"
                       fullWidth
                       onClick={this.handleOpenOTPDialog}
+                      disabled={this.checkValidInputs()}
                     >
                       send otp
                     </Button>
@@ -319,11 +431,11 @@ class InternalTransfer extends Component {
               <br />
               {(!accNumber ||
                 !currentBalance ||
-                !destName ||
-                !destEmail ||
-                !destPhone ||
-                !destPayAccNumber) && (
-                <FormHelperText fullWidth style={{ color: "red" }}>
+                !receiverName ||
+                !receiverEmail ||
+                !receiverPhone ||
+                !receiverPayAccNumber) && (
+                <FormHelperText style={{ color: "red" }}>
                   Something went wrong, please try again later
                 </FormHelperText>
               )}
@@ -336,7 +448,7 @@ class InternalTransfer extends Component {
                   Payment account number
                 </Typography>
                 <Typography variant="subtitle1" component="span">
-                  {accNumber ? accNumber : "ERROR"}
+                  {accNumber}
                 </Typography>
                 {currentBalance && (
                   <FormHelperText
@@ -354,19 +466,19 @@ class InternalTransfer extends Component {
                   <TableBody>
                     <TableRow>
                       <TableCell>Name</TableCell>
-                      <TableCell>{destName}</TableCell>
+                      <TableCell>{receiverName}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>Email</TableCell>
-                      <TableCell>{destEmail}</TableCell>
+                      <TableCell>{receiverEmail}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>Phone</TableCell>
-                      <TableCell>{destPhone}</TableCell>
+                      <TableCell>{receiverPhone}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>Payment account number</TableCell>
-                      <TableCell>{destPayAccNumber}</TableCell>
+                      <TableCell>{receiverPayAccNumber}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -380,13 +492,20 @@ class InternalTransfer extends Component {
                 margin="normal"
                 onChange={this.handleInputChange}
                 name="OTP"
+                value={OTP}
               />
-              <FormHelperText
-                onClick={this.handleSendOTP}
-                style={{ cursor: "pointer", color: "CornflowerBlue" }}
-              >
-                Send OTP
-              </FormHelperText>
+              {OTP.length > 6 ? (
+                <FormHelperText style={{ color: "red" }}>
+                  OTP code is 6 characters long
+                </FormHelperText>
+              ) : (
+                <FormHelperText>6 characters</FormHelperText>
+              )}
+              {OTP.length === 6 && OTP !== checkOTP && (
+                <FormHelperText style={{ color: "red" }}>
+                  OTP unmatched
+                </FormHelperText>
+              )}
             </div>
           </DialogContent>
           <DialogActions>
@@ -400,10 +519,12 @@ class InternalTransfer extends Component {
               disabled={
                 !accNumber ||
                 !currentBalance ||
-                !destName ||
-                !destEmail ||
-                !destPhone ||
-                !destPayAccNumber
+                !receiverName ||
+                !receiverEmail ||
+                !receiverPhone ||
+                !receiverPayAccNumber ||
+                OTP.length !== 6 ||
+                OTP !== checkOTP
               }
             >
               confirm
