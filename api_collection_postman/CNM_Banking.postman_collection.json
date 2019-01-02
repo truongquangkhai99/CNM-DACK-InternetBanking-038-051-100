@@ -272,7 +272,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"customerId\": \"RS9vvnjvYR\",\n\t\"toAccNumber\": \"91538945\",\n\t\"amount\": \"123431513\"\n}"
+					"raw": "{\n\t\"payAccId\": \"-Qh5Vpqew\",\n\t\"toAccNumber\": \"91538945\",\n\t\"amount\": \"123431513\",\n\t\"feeType\": \"1\"\n}"
 				},
 				"url": {
 					"raw": "localhost:3001/history",
@@ -284,12 +284,12 @@
 						"history"
 					]
 				},
-				"description": "Tạo mới một lịch sử giao dịch"
+				"description": "Tạo mới một lịch sử giao dịch\nfeeType = 1: người gửi trả phí\nfeeType = 2: receiver trả phí"
 			},
 			"response": []
 		},
 		{
-			"name": "localhost:3001/histories/:customerId",
+			"name": "localhost:3001/histories/:payAccId",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -309,6 +309,31 @@
 					]
 				},
 				"description": "lấy danh sách lịch sử giao dịch của customerId"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/pay-accs/status/open",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3001/pay-accs/status/open",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"pay-accs",
+						"status",
+						"open"
+					]
+				},
+				"description": "trả về số lượng payacc open + mảng các payacc open"
 			},
 			"response": []
 		}

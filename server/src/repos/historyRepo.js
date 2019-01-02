@@ -3,19 +3,20 @@ var db = require("../fn/mysql-db");
 exports.add = historyEntity => {
   const {
     id,
-    customerId,
+    payAccId,
     toAccNumber,
     amount,
+    feeType,
     createdAt
   } = historyEntity;
 
   const sql =
-    "insert into `history`(`id`, `customerId`, `toAccNumber`, `amount`, `createdAt`)" +
-    `values('${id}', '${customerId}', '${toAccNumber}','${amount}', '${createdAt}');`;
+    "insert into `history`(`id`, `payAccId`, `toAccNumber`, `amount`, `feeType`, `createdAt`)" +
+    `values('${id}', '${payAccId}', '${toAccNumber}','${amount}', '${feeType}', '${createdAt}');`;
   return db.save(sql);
 };
 
-exports.loadByCustomerId = customerId => {
-  var sql = `select * from history where customerId = '${customerId}'`;
+exports.loadByPayAccId = payAccId => {
+  var sql = `select * from history where payAccId = '${payAccId}'`;
   return db.load(sql);
 };

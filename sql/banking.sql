@@ -26,9 +26,10 @@ DROP TABLE IF EXISTS `history`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `history` (
   `id` varchar(45) NOT NULL,
-  `customerId` varchar(45) NOT NULL,
+  `payAccId` varchar(45) NOT NULL,
   `toAccNumber` varchar(45) NOT NULL,
-  `amount` varchar(45) DEFAULT NULL,
+  `amount` varchar(45) NOT NULL,
+  `feeType` varchar(45) NOT NULL,
   `createdAt` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -40,7 +41,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES ('gCiKoYZ5-','RS9vvnjvYR','91538945','123','2019-01-02 11:54'),('syg5KrWQK','RS9vvnjvYR','91538945','123431513','2019-01-02 12:26'),('ZYptfAhKx','RS9vvnjvYR','91538945','123431513','2019-01-02 11:54');
+INSERT INTO `history` VALUES ('GUE8KQQmH','-Qh5Vpqew','91538945','123431513','1','2019-01-02 14:00');
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,4 +145,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-02 12:38:59
+-- Dump completed on 2019-01-02 14:13:26

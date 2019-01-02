@@ -27,11 +27,11 @@ router.post("/history", (req, res) => {
         });
 });
 
-router.get("/histories/:customerId", (req, res) => {
-    const { customerId } = req.params;
+router.get("/histories/:payAccId", (req, res) => {
+    const { payAccId } = req.params;
 
     historyRepo
-        .loadByCustomerId(customerId)
+        .loadByPayAccId(payAccId)
         .then(rows => {
             res.statusCode = 200;
             // res.json(rows);
