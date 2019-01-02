@@ -108,5 +108,21 @@ router.patch("/pay-acc/balance", (req, res) => {
 });
 
 
+router.get("/pay-acc/:accNumber", (req, res) => {
+  const {accNumber} = req.params;
+  payAccRepo
+    .loadByAccNumber(accNumber)
+    .then(rows => {
+      res.statusCode = 200;
+      res.json(rows);
+    })
+    .catch(err => {
+      console.log(err);
+      res.statusCode = 500;
+      res.end("View error log on console");
+    });
+});
+
+
 
 module.exports = router;

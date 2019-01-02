@@ -36,3 +36,8 @@ exports.UpdateBalanceById = payAccEntity => {
     `'${payAccId}';`;
   return db.save(sql);
 };
+
+exports.loadByAccNumber = accNumber => {
+  var sql = `select * from payacc where accNumber = '${accNumber}'`;
+  return db.load(sql);
+};

@@ -233,6 +233,30 @@
 				"description": "Gửi mã OTP xác nhận qua email"
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3001/pay-acc/:accNumber",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3001/pay-acc/87240963",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"pay-acc",
+						"87240963"
+					]
+				},
+				"description": "Trả về thông tin payacc theo Số Tài Khoản"
+			},
+			"response": []
 		}
 	]
 }

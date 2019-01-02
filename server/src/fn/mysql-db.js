@@ -5,7 +5,7 @@ var createConnection = () => {
     host: "localhost",
     // port: '8889',
     user: "root",
-    password: "12345678",
+    password: "root",
     database: "banking"
   });
 };
