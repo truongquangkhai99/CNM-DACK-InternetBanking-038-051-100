@@ -257,6 +257,60 @@
 				"description": "Trả về thông tin payacc theo Số Tài Khoản"
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3001/history",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\": \"RS9vvnjvYR\",\n\t\"toAccNumber\": \"91538945\",\n\t\"amount\": \"123431513\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/history",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"history"
+					]
+				},
+				"description": "Tạo mới một lịch sử giao dịch"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/histories/:customerId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3001/histories/RS9vvnjvYR",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"histories",
+						"RS9vvnjvYR"
+					]
+				},
+				"description": "lấy danh sách lịch sử giao dịch của customerId"
+			},
+			"response": []
 		}
 	]
 }

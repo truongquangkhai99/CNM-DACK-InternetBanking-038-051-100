@@ -19,6 +19,8 @@ var authCtrl = require("./src/apiControllers/authControllers");
 
 var payAccCtrl = require("./src/apiControllers/payAccControllers");
 
+var historyCtrl = require("./src/apiControllers/historyControllers");
+
 var userCtrl = require("./src/apiControllers/userControllers");
 
 var customerCtrl = require("./src/apiControllers/customerControllers");
@@ -61,6 +63,9 @@ app.post("/send-otp", (req, res) => {
 // app.use("/", verifyAccessToken, requestCtrl);
 
 app.use("/", payAccCtrl);
+// app.use("/", verifyAccessToken, payAccCtrl);
+
+app.use("/", historyCtrl);
 // app.use("/", verifyAccessToken, payAccCtrl);
 
 app.use("/", customerCtrl);

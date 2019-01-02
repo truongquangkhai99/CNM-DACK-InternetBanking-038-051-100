@@ -18,6 +18,33 @@ USE `banking`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `history`
+--
+
+DROP TABLE IF EXISTS `history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `history` (
+  `id` varchar(45) NOT NULL,
+  `customerId` varchar(45) NOT NULL,
+  `toAccNumber` varchar(45) NOT NULL,
+  `amount` varchar(45) DEFAULT NULL,
+  `createdAt` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `history`
+--
+
+LOCK TABLES `history` WRITE;
+/*!40000 ALTER TABLE `history` DISABLE KEYS */;
+INSERT INTO `history` VALUES ('gCiKoYZ5-','RS9vvnjvYR','91538945','123','2019-01-02 11:54'),('ZYptfAhKx','RS9vvnjvYR','91538945','123431513','2019-01-02 11:54');
+/*!40000 ALTER TABLE `history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `payacc`
 --
 
@@ -42,7 +69,7 @@ CREATE TABLE `payacc` (
 
 LOCK TABLES `payacc` WRITE;
 /*!40000 ALTER TABLE `payacc` DISABLE KEYS */;
-INSERT INTO `payacc` VALUES ('avVPUBuDR','8yZfAOq1pm','songvancam@gmail.com','khach1','87240963','1202020','2018-12-30 15:36');
+INSERT INTO `payacc` VALUES ('-Qh5Vpqew','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','85020173','2000','2018-12-31 09:45'),('avVPUBuDR','8yZfAOq1pm','songvancam@gmail.com','khach1','87240963','1202020','2018-12-30 15:36'),('g-glCUcHA','oOyRmS5bjC','taulakhach@gmail.com','customer2','98592933','0','2019-01-02 10:14'),('HpkAfQDxN','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','83383813','41341','2018-12-31 01:25'),('LHeouDxxR','RS9vvnjvYR','taulakha1ch@gmail.com','customer3','26834461','0','2018-12-31 01:24'),('Sn7zMmVFP','oOyRmS5bjC','taulakhach@gmail.com','customer2','91538945','123','2018-12-31 01:24');
 /*!40000 ALTER TABLE `payacc` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -67,7 +94,7 @@ CREATE TABLE `userreftokenext` (
 
 LOCK TABLES `userreftokenext` WRITE;
 /*!40000 ALTER TABLE `userreftokenext` DISABLE KEYS */;
-INSERT INTO `userreftokenext` VALUES ('12rnhP7g16','uY02bQgDORpcWqWi9Nbhd183vtZkskNeNyplJgTQ0xpVjwlLkOqZEnlb2fOp2EEqmL9we0YMAlcF2FrO','2018-12-30 08:45:22');
+INSERT INTO `userreftokenext` VALUES ('12rnhP7g16','uY02bQgDORpcWqWi9Nbhd183vtZkskNeNyplJgTQ0xpVjwlLkOqZEnlb2fOp2EEqmL9we0YMAlcF2FrO','2018-12-30 08:45:22'),('7kxwDSxCrD','7YhcjW3HB3AqoWjAMW9BoBSsmXzWtHiMvLuwLeX08xx0x1xoZ4I4LMgDF73M0RnAmXmA1V9I74e40QxK','2019-01-02 09:54:12'),('oOyRmS5bjC','iJvUnRSbCzFEfYiHp5dYlWqVIjDvsXg2AxVHCE0pDwdwLcSh1YRWlPpjVA6Tn1whoOAkv2QjK4HQcjdP','2019-01-02 10:17:28'),('RS9vvnjvYR','zwLoAJPSTcus3alVO8o8OJDSflSM1hp3kbRWjIVJIRWa0bRXp8Qt6QmRUsR7L2ocFVVAp64gzVAqbmzM','2019-01-02 07:46:18'),('wdqrEyohs7','e5sLeQ9NFXpkpU5CrLnjgnqkeWuBxYMa2cERPxqAuSX8pE8ZjvMAnZVpLXa4QtGvdQa0hSjttFlRCI3A','2019-01-02 09:30:39');
 /*!40000 ALTER TABLE `userreftokenext` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,4 +142,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-30 16:39:38
+-- Dump completed on 2019-01-02 11:57:38
