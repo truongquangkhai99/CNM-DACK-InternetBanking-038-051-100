@@ -84,8 +84,11 @@ class PayAccStaff extends Component {
     this.setState({ togglePayInPanel: false });
   };
 
-  handlePayInSucceed = () => {
-    this.getPayAccountsList();
+  handlePayInSucceed = amount => {
+    this.setState(
+      { currentBalance: +this.state.currentBalance + +amount },
+      this.getPayAccountsList
+    );
   };
 
   handleCloseMessage = () => {

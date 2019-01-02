@@ -68,7 +68,7 @@ export default class PayIn extends Component {
             message: "The pay in has been succeed",
             payInAmount: ""
           });
-          this.props.onPayInSucceed();
+          this.props.onPayInSucceed(payInAmount);
         } else {
           this.setState({
             messageType: "error",
