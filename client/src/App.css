@@ -118,7 +118,11 @@ a {
 }
 
 .inner-trans {
-  max-width: 921px;
+  max-width: 720px;
+}
+
+.inner-trans > div > div:last-of-type {
+  margin-top: 25px;
 }
 
 .inner-trans > div > div:last-of-type > div:last-of-type {

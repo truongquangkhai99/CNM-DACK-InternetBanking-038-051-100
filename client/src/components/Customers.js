@@ -223,10 +223,10 @@ class Customers extends Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleCloseDialog} color="primary">
-              Cancel
+              cancel
             </Button>
             <Button onClick={this.handleCreatePayAcc} color="primary" autoFocus>
-              Create
+              create
             </Button>
           </DialogActions>
         </Dialog>
