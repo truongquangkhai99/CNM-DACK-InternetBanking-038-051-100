@@ -113,7 +113,7 @@ class PayAccClient extends Component {
       {
         messageType: "success",
         isMessageOpen: true,
-        message: `Successfully close payment account #${accNumber}`,
+        message: `Successfully close payment account ${accNumber}`,
         payAccId: "",
         isDialogClosePayAccOpen: false
       },
@@ -146,7 +146,7 @@ class PayAccClient extends Component {
           this.setState({
             messageType: "error",
             isMessageOpen: true,
-            message: `Sorry, failed getting history of payment account #${accNumber}`
+            message: `Sorry, failed getting history of payment account ${accNumber}`
           });
           throw new Error(
             "Something went wrong getting history of payment account, status ",
@@ -158,7 +158,7 @@ class PayAccClient extends Component {
         this.setState({
           messageType: "error",
           isMessageOpen: true,
-          message: `Sorry, failed getting history of payment account #${accNumber}`
+          message: `Sorry, failed getting history of payment account ${accNumber}`
         });
         console.log(err);
       });
@@ -195,7 +195,7 @@ class PayAccClient extends Component {
     const MUIDataTableInfo = {
       default: {
         data: payAccs.map((payAcc, index) => {
-          const { id, accNumber, balance, createdAt } = payAcc;
+          const { id, accNumber, balance, createdAt, status } = payAcc;
           return [
             index + 1,
             accNumber,
@@ -209,14 +209,16 @@ class PayAccClient extends Component {
               >
                 history
               </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => this.onClosePayAcc(id, accNumber, balance)}
-                style={{ marginLeft: "10px" }}
-              >
-                close
-              </Button>
+              {status === "OPEN" && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => this.onClosePayAcc(id, accNumber, balance)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  close
+                </Button>
+              )}
             </div>
           ];
         }),
@@ -319,7 +321,7 @@ class PayAccClient extends Component {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
-            {`Are you sure to close the payment account #${accNumber}?`}
+            {`Are you sure to close the payment account ${accNumber}?`}
           </DialogTitle>
           <DialogContent
             style={{ width: "600px", height: "auto", maxHeight: "1000px" }}
@@ -380,7 +382,7 @@ class PayAccClient extends Component {
         >
           <DialogContent>
             <MUIDataTable
-              title={`Recent activities of payment account #${accNumber}`}
+              title={`Recent activities of payment account ${accNumber}`}
               data={MUIDataTableInfo.payAccHistory.data}
               columns={MUIDataTableInfo.payAccHistory.columns}
               options={MUIDataTableInfo.payAccHistory.options}

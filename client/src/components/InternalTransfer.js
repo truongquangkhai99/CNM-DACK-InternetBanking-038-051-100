@@ -31,19 +31,22 @@ import { getUserInfo } from "../utils/authHelper";
 class InternalTransfer extends Component {
   state = {
     payAccs: [],
+    payAccsTransferable: [],
     payAccId: "",
     currentBalance: 0,
     // for notify message
     isMessageOpen: false,
     messageType: "",
     message: "",
+    receiverPayAccId: "",
     receiverPayAccNumber: "",
     receiverName: "",
     receiverEmail: "",
     receiverPhone: "",
+    receiverCurrentBalance: 0,
     transferAmount: "",
     transferMsg: "",
-    feeType: 1,
+    feeType: "1",
     isDialogOTPOpen: false,
     OTP: "",
     checkOTP: null
@@ -65,14 +68,16 @@ class InternalTransfer extends Component {
         const { status, data } = resp;
         if (status === 200) {
           // only accounts with balance > 0
-          const payAccs = data.filter(payAcc => +payAcc.balance > 0);
+          const payAccs = data,
+            payAccsTransferable = data.filter(payAcc => +payAcc.balance > 0);
           if (payAccs.length > 0)
             // default selected payment account
             this.setState({
               payAccs,
+              payAccsTransferable,
               payAccId: payAccs[0].id,
               accNumber: payAccs[0].accNumber,
-              currentBalance: payAccs[0].balance
+              currentBalance: +payAccs[0].balance
             });
         } else {
           this.setState({
@@ -105,7 +110,7 @@ class InternalTransfer extends Component {
     if (name === "payAccId")
       return this.setState({
         [name]: value,
-        currentBalance: this.state.payAccs.find(payAcc => payAcc.id === value)
+        currentBalance: +this.state.payAccs.find(payAcc => payAcc.id === value)
           .balance
       });
 
@@ -182,17 +187,21 @@ class InternalTransfer extends Component {
             });
 
           const {
+            id: receiverPayAccId,
             clientName: receiverName,
             clientEmail: receiverEmail,
-            phone: receiverPhone
+            phone: receiverPhone,
+            balance: receiverCurrentBalance
           } = getReceiver.data[0];
 
           this.setState({
             checkOTP,
+            receiverPayAccId,
             receiverName,
             receiverEmail,
             receiverPhone,
             receiverPayAccNumber,
+            receiverCurrentBalance,
             isDialogOTPOpen: true
           });
         })
@@ -210,24 +219,55 @@ class InternalTransfer extends Component {
 
   handleTransfer = () => {
     // check inputs
+    const {
+      payAccId,
+      currentBalance,
+      transferAmount,
+      receiverPayAccId,
+      receiverPayAccNumber,
+      receiverCurrentBalance,
+      feeType
+    } = this.state;
     // call API
-    // succeed
-    this.setState(
-      {
-        isDialogOTPOpen: false,
-        messageType: "success",
-        isMessageOpen: true,
-        message: "Successfully operated the transaction",
-        // reset form
-        receiverPayAccNumber: "",
-        transferAmount: "",
-        transferMsg: "",
-        OTP: "",
-        checkOTP: "",
-        feeType: 1
-      }, // refresh payment accounts
-      this.getPayAccsList
-    );
+    const transferFee = (+feeType === 1 ? 1 : 0) * 0; // <- last number is transfer fee, assume is 0 for now
+    axios
+      .all([
+        axios.patch("http://localhost:3001/pay-acc/balance", {
+          payAccId,
+          newBalance: +currentBalance - +transferAmount - transferFee
+        }),
+        axios.patch("http://localhost:3001/pay-acc/balance", {
+          payAccId: receiverPayAccId,
+          newBalance: +receiverCurrentBalance + +transferAmount - transferFee
+        }),
+        axios.post("http://localhost:3001/history", {
+          payAccId,
+          toAccNumber: receiverPayAccNumber,
+          amount: +transferAmount,
+          feeType: +feeType
+        })
+      ])
+      .then((senderBalance, receiverBalance, transferHistory) => {
+        this.setState(
+          {
+            isDialogOTPOpen: false,
+            messageType: "success",
+            isMessageOpen: true,
+            message: "Successfully operated the transaction",
+            // reset form
+            receiverPayAccNumber: "",
+            transferAmount: "",
+            transferMsg: "",
+            OTP: "",
+            checkOTP: "",
+            feeType: "1"
+          }, // refresh payment accounts
+          this.getPayAccsList
+        );
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   checkValidInputs = () => {
@@ -243,7 +283,7 @@ class InternalTransfer extends Component {
 
     if (
       transferAmount === "" ||
-      transferAmount < 1 ||
+      +transferAmount < 1 ||
       +transferAmount > +currentBalance
     )
       return true;
@@ -262,6 +302,7 @@ class InternalTransfer extends Component {
   render() {
     const {
       payAccs,
+      payAccsTransferable,
       payAccId,
       accNumber,
       currentBalance,
@@ -284,7 +325,7 @@ class InternalTransfer extends Component {
       <React.Fragment>
         <Grid container direction="row" justify="center" alignItems="center">
           <Paper className="paper inner-trans">
-            {payAccs.length < 1 ? (
+            {payAccsTransferable.length < 1 ? (
               <FormControl fullWidth>
                 <Typography
                   variant="title"
@@ -322,13 +363,11 @@ class InternalTransfer extends Component {
                           id: "payAccId"
                         }}
                       >
-                        {payAccs
-                          .filter(payAcc => payAcc.balance > 0)
-                          .map((payAcc, index) => (
-                            <MenuItem key={index} value={payAcc.id}>
-                              {payAcc.accNumber}
-                            </MenuItem>
-                          ))}
+                        {payAccsTransferable.map((payAcc, index) => (
+                          <MenuItem key={index} value={payAcc.id}>
+                            {payAcc.accNumber}
+                          </MenuItem>
+                        ))}
                       </Select>
                     )}
                     <FormHelperText>
@@ -365,7 +404,8 @@ class InternalTransfer extends Component {
                   />
                   {+transferAmount > +currentBalance && (
                     <FormHelperText style={{ color: "red" }}>
-                      Amount of the transaction is greater than current balance
+                      Amount of the transaction must not be greater than current
+                      balance
                     </FormHelperText>
                   )}
                   <TextField
@@ -389,12 +429,12 @@ class InternalTransfer extends Component {
                         onChange={this.handleInputChange}
                       >
                         <FormControlLabel
-                          value={1}
+                          value="1"
                           control={<Radio />}
                           label="Sender"
                         />
                         <FormControlLabel
-                          value={2}
+                          value="2"
                           control={<Radio />}
                           label="Receiver"
                         />
@@ -430,7 +470,7 @@ class InternalTransfer extends Component {
               Confirm the transaction
               <br />
               {(!accNumber ||
-                !currentBalance ||
+                isNaN(currentBalance) ||
                 !receiverName ||
                 !receiverEmail ||
                 !receiverPhone ||
@@ -450,11 +490,11 @@ class InternalTransfer extends Component {
                 <Typography variant="subtitle1" component="span">
                   {accNumber}
                 </Typography>
-                {currentBalance && (
+                {!isNaN(currentBalance) && (
                   <FormHelperText
                     style={{ marginTop: "0", marginBottom: "15px" }}
                   >
-                    Current balance: {currentBalance}
+                    Current balance: {+currentBalance}
                   </FormHelperText>
                 )}
               </FormControl>
@@ -494,13 +534,9 @@ class InternalTransfer extends Component {
                 name="OTP"
                 value={OTP}
               />
-              {OTP.length > 6 ? (
-                <FormHelperText style={{ color: "red" }}>
-                  OTP code is 6 characters long
-                </FormHelperText>
-              ) : (
-                <FormHelperText>6 characters</FormHelperText>
-              )}
+              <FormHelperText style={{ color: OTP.length > 6 && "red" }}>
+                OTP code is 6 characters long
+              </FormHelperText>
               {OTP.length === 6 && OTP !== checkOTP && (
                 <FormHelperText style={{ color: "red" }}>
                   OTP unmatched
@@ -516,16 +552,7 @@ class InternalTransfer extends Component {
               onClick={this.handleTransfer}
               color="primary"
               autoFocus
-              disabled={
-                !accNumber ||
-                !currentBalance ||
-                !receiverName ||
-                !receiverEmail ||
-                !receiverPhone ||
-                !receiverPayAccNumber ||
-                OTP.length !== 6 ||
-                OTP !== checkOTP
-              }
+              disabled={OTP.length !== 6 || OTP !== checkOTP}
             >
               confirm
             </Button>

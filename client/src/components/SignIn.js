@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import axios from "axios";
 import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
 import Recaptcha from "react-recaptcha";
+import Message from "./Message";
 import { checkAuth, signIn } from "../utils/authHelper";
 
 export default class SignIn extends React.Component {
@@ -10,7 +11,11 @@ export default class SignIn extends React.Component {
     captcha: false,
     username: "",
     password: "",
-    redirectToReferrer: checkAuth()
+    redirectToReferrer: checkAuth(),
+    // for notify message
+    isMessageOpen: false,
+    messageType: "",
+    message: ""
   };
 
   componentDidMount() {
@@ -51,19 +56,38 @@ export default class SignIn extends React.Component {
           signIn(access_token, refresh_token);
           this.setState({ redirectToReferrer: true });
         } else {
+          this.setState({
+            messageType: "error",
+            isMessageOpen: true,
+            message: "Email or password was wrong"
+          });
           throw new Error(
-            "Something went wrong when  signing in, status ",
+            "Something went wrong when signing in, status ",
             status
           );
         }
       })
       .catch(err => {
+        this.setState({
+          messageType: "error",
+          isMessageOpen: true,
+          message: "Email or password was wrong"
+        });
         console.log(err);
       });
   };
 
+  handleCloseMessage = () => {
+    this.setState({ isMessageOpen: false });
+  };
+
   render() {
-    const { redirectToReferrer } = this.state;
+    const {
+      redirectToReferrer,
+      messageType,
+      isMessageOpen,
+      message
+    } = this.state;
     const { from } = this.props.location.state || {
       from: { pathname: "/" }
     };
@@ -124,6 +148,13 @@ export default class SignIn extends React.Component {
             </div>
           </div>
         </Paper>
+
+        <Message
+          variant={messageType}
+          message={message}
+          open={isMessageOpen}
+          onClose={this.handleCloseMessage}
+        />
       </Grid>
     );
   }
