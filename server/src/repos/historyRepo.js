@@ -7,12 +7,13 @@ exports.add = historyEntity => {
     toAccNumber,
     amount,
     feeType,
+    transactionType,
     createdAt
   } = historyEntity;
 
   const sql =
-    "insert into `history`(`id`, `payAccId`, `toAccNumber`, `amount`, `feeType`, `createdAt`)" +
-    `values('${id}', '${payAccId}', '${toAccNumber}','${amount}', '${feeType}', '${createdAt}');`;
+    "insert into `history`(`id`, `payAccId`, `toAccNumber`, `amount`, `feeType`, `transactionType`, `createdAt`)" +
+    `values('${id}', '${payAccId}', '${toAccNumber}','${amount}', '${feeType}', '${transactionType}', '${createdAt}');`;
   return db.save(sql);
 };
 
