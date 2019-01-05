@@ -1,98 +1,21 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { connect } from "react-redux";
 import { Button } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
 import PayIn from "./PayIn";
 import Message from "./Message";
 import MustBeStaff from "./HOCs/MustBeStaff";
+import * as payAccStaffActions from "../redux/actions/payAccStaffActions";
+import * as messageActions from "../redux/actions/messageActions";
 
 class PayAccStaff extends Component {
-  state = {
-    payAccs: [],
-    // pay in panel
-    payAccId: "",
-    accNumber: "",
-    clientName: "",
-    clientEmail: "",
-    currentBalance: 0,
-    // for notify message
-    isMessageOpen: false,
-    messageType: "",
-    message: "",
-    // toggle pay in panel
-    togglePayInPanel: false
-  };
-
-  getPayAccountsList = () => {
-    axios
-      .get("http://localhost:3001/pay-accs")
-      .then(resp => {
-        const { status, data: payAccs } = resp;
-        if (status === 200) {
-          this.setState({ payAccs });
-        } else {
-          this.setState({
-            messageType: "error",
-            isMessageOpen: true,
-            message: "Failed getting payment accounts list"
-          });
-          throw new Error(
-            "Something went wrong when  getting payment accounts list, status ",
-            status
-          );
-        }
-      })
-      .catch(err => {
-        this.setState({
-          messageType: "error",
-          isMessageOpen: true,
-          message: "Failed getting payment accounts list"
-        });
-        console.log(err);
-      });
-  };
-
   componentDidMount = () => {
-    this.getPayAccountsList();
+    this.props.getPayAccsList();
   };
 
-  onPayIn = (payAccId, accNumber, clientName, clientEmail, currentBalance) => {
-    if (
-      payAccId === undefined ||
-      accNumber === undefined ||
-      clientName === undefined ||
-      clientEmail === undefined ||
-      currentBalance === undefined
-    )
-      return this.setState({
-        messageType: "error",
-        isMessageOpen: true,
-        message: "Could not get payment account identities"
-      });
-
-    this.setState({
-      payAccId,
-      accNumber,
-      clientName,
-      clientEmail,
-      currentBalance,
-      togglePayInPanel: true
-    });
-  };
-
-  handleClosePayInPanel = () => {
-    this.setState({ togglePayInPanel: false });
-  };
-
-  handlePayInSucceed = amount => {
-    this.setState(
-      { currentBalance: +this.state.currentBalance + +amount },
-      this.getPayAccountsList
-    );
-  };
-
-  handleCloseMessage = () => {
-    this.setState({ isMessageOpen: false, message: "" });
+  onPayInSucceed = amount => {
+    this.props.handlePayInSucceed(+this.props.currentBalance + +amount);
+    this.props.getPayAccsList();
   };
 
   render() {
@@ -107,7 +30,7 @@ class PayAccStaff extends Component {
       message,
       isMessageOpen,
       togglePayInPanel
-    } = this.state;
+    } = this.props;
 
     const data = payAccs.map((payAcc, index) => [
       index + 1,
@@ -120,7 +43,7 @@ class PayAccStaff extends Component {
         variant="contained"
         color="primary"
         onClick={() =>
-          this.onPayIn(
+          this.props.openPayInPanel(
             payAcc.id,
             payAcc.accNumber,
             payAcc.clientName,
@@ -128,6 +51,7 @@ class PayAccStaff extends Component {
             payAcc.balance
           )
         }
+        disabled={payAcc.status === "CLOSED"}
       >
         pay in
       </Button>
@@ -161,8 +85,8 @@ class PayAccStaff extends Component {
             clientName={clientName}
             clientEmail={clientEmail}
             currentBalance={currentBalance}
-            onPayInSucceed={this.handlePayInSucceed}
-            onClosePayInPanel={this.handleClosePayInPanel}
+            onPayInSucceed={this.onPayInSucceed}
+            onClosePayInPanel={this.props.closePayInPanel}
           />
         )}
 
@@ -177,11 +101,38 @@ class PayAccStaff extends Component {
           variant={messageType}
           message={message}
           open={isMessageOpen}
-          onClose={this.handleCloseMessage}
+          onClose={this.props.closeMessage}
         />
       </React.Fragment>
     );
   }
 }
 
-export default MustBeStaff(PayAccStaff);
+const mapStateToProps = state => ({
+  ...state.payAccStaff
+});
+
+const mapDispatchToProps = dispatch => ({
+  getPayAccsList: () => dispatch(payAccStaffActions.getPayAccsList()),
+  openPayInPanel: (id, accNumber, clientName, clientEmail, balance) =>
+    dispatch(
+      payAccStaffActions.openPayInPanel(
+        id,
+        accNumber,
+        clientName,
+        clientEmail,
+        balance
+      )
+    ),
+  closePayInPanel: () => dispatch(payAccStaffActions.closePayInPanel()),
+  handlePayInSucceed: amount =>
+    dispatch(payAccStaffActions.handlePayInSucceed(amount)),
+  closeMessage: () => dispatch(messageActions.closeMessage())
+});
+
+export default MustBeStaff(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PayAccStaff)
+);

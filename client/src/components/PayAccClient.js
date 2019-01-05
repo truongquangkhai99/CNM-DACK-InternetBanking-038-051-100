@@ -351,18 +351,18 @@ class PayAccClient extends Component {
               >
                 history
               </Button>
-              {status === "OPEN" &&
-                payAccs.filter(payAcc => payAcc.status === "OPEN").length >
-                  1 && (
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => this.onClosePayAcc(id, accNumber, balance)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    close
-                  </Button>
-                )}
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => this.onClosePayAcc(id, accNumber, balance)}
+                style={{ marginLeft: "10px" }}
+                disabled={
+                  status === "CLOSED" &&
+                  payAccs.filter(payAcc => payAcc.status === "OPEN").length < 2
+                }
+              >
+                close
+              </Button>
             </div>
           ];
         }),
