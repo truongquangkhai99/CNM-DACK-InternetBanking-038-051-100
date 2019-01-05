@@ -2,7 +2,7 @@ import axios from "axios";
 import * as payAccStaffConstants from "../constants/payAccStaffConstants";
 import * as messageConstants from "../constants/messageConstants";
 
-export const getPayAccsList = () => dispatch => {
+export const getPayAccsList = () => dispatch =>
   axios
     .get("http://localhost:3001/pay-accs")
     .then(resp => {
@@ -10,7 +10,7 @@ export const getPayAccsList = () => dispatch => {
       if (status === 200) {
         dispatch({
           type: payAccStaffConstants.GET_PAY_ACCS_LIST_SUCCEED,
-          payload: [...payAccs]
+          payload: payAccs
         });
       } else {
         dispatch({
@@ -36,7 +36,6 @@ export const getPayAccsList = () => dispatch => {
       });
       console.log(err);
     });
-};
 
 export const openPayInPanel = (
   payAccId,

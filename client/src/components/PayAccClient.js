@@ -357,7 +357,7 @@ class PayAccClient extends Component {
                 onClick={() => this.onClosePayAcc(id, accNumber, balance)}
                 style={{ marginLeft: "10px" }}
                 disabled={
-                  status === "CLOSED" &&
+                  status === "CLOSED" ||
                   payAccs.filter(payAcc => payAcc.status === "OPEN").length < 2
                 }
               >
