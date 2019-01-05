@@ -137,7 +137,7 @@ class Customers extends Component {
   };
 
   handleCloseMessage = () => {
-    this.setState({ isMessageOpen: false });
+    this.setState({ isMessageOpen: false, message: "" });
   };
 
   handleCreateAccountSucceed = () => {

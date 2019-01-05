@@ -118,7 +118,7 @@ class InternalTransfer extends Component {
   };
 
   handleCloseMessage = () => {
-    this.setState({ isMessageOpen: false });
+    this.setState({ isMessageOpen: false, message: "" });
   };
 
   handleCloseOTPDialog = () => {
@@ -247,23 +247,55 @@ class InternalTransfer extends Component {
           feeType: +feeType
         })
       ])
-      .then((senderBalance, receiverBalance, transferHistory) => {
-        this.setState(
-          {
-            isDialogOTPOpen: false,
-            messageType: "success",
+      .then((updateSenderPayAcc, updateReceiverPayAcc, transferHistory) => {
+        if (
+          updateSenderPayAcc.status !== 201 ||
+          updateReceiverPayAcc.status !== 201
+        ) {
+          this.setState({
+            messageType: "error",
             isMessageOpen: true,
-            message: "Successfully operated the transaction",
-            // reset form
-            receiverPayAccNumber: "",
-            transferAmount: "",
-            transferMsg: "",
-            OTP: "",
-            checkOTP: "",
-            feeType: "1"
-          }, // refresh payment accounts
-          this.getPayAccsList
-        );
+            message: "Sorry, failed transferring remaining balance"
+          });
+          throw new Error(
+            "Something went wrong when transferring remaining balance, status ",
+            updateSenderPayAcc.status
+          );
+        }
+
+        if (transferHistory.status !== 201) {
+          this.setState({
+            messageType: "error",
+            isMessageOpen: true,
+            message: "Sorry, failed updating history of the transaction"
+          });
+          throw new Error(
+            "Something went wrong when updating history of the transaction, status ",
+            updateSenderPayAcc.status
+          );
+        }
+
+        if (
+          updateSenderPayAcc.status === 201 &&
+          updateReceiverPayAcc.status === 201 &&
+          transferHistory.status === 201
+        )
+          this.setState(
+            {
+              isDialogOTPOpen: false,
+              messageType: "success",
+              isMessageOpen: true,
+              message: "Successfully operated the transaction",
+              // reset form
+              receiverPayAccNumber: "",
+              transferAmount: "",
+              transferMsg: "",
+              OTP: "",
+              checkOTP: "",
+              feeType: "1"
+            }, // refresh payment accounts
+            this.getPayAccsList
+          );
       })
       .catch(err => {
         console.log(err);

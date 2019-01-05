@@ -78,7 +78,7 @@ export default class SignIn extends React.Component {
   };
 
   handleCloseMessage = () => {
-    this.setState({ isMessageOpen: false });
+    this.setState({ isMessageOpen: false, message: "" });
   };
 
   render() {

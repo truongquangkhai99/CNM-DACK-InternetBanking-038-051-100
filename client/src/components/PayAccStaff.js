@@ -92,7 +92,7 @@ class PayAccStaff extends Component {
   };
 
   handleCloseMessage = () => {
-    this.setState({ isMessageOpen: false });
+    this.setState({ isMessageOpen: false, message: "" });
   };
 
   render() {

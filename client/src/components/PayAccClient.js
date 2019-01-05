@@ -28,7 +28,7 @@ class PayAccClient extends Component {
     // for dialog viewing payment account history
     isDialogHistoryPayAccOpen: false,
     // transfer remaining balance of closing payment account to current customer's another one
-    transferAccId: "",
+    receiverPayAccNumber: "",
     // for notify message
     isMessageOpen: false,
     messageType: "",
@@ -89,10 +89,16 @@ class PayAccClient extends Component {
         isMessageOpen: true,
         message: "Sorry, could not get this payment account information"
       });
+
+    const { payAccs } = this.state;
+    const defaultSelectedPayAcc = payAccs.filter(
+      payAcc => payAccId !== payAcc.id && payAcc.status === "OPEN"
+    )[0].accNumber;
     this.setState({
       payAccId,
       accNumber,
       currentBalance,
+      receiverPayAccNumber: defaultSelectedPayAcc,
       isDialogClosePayAccOpen: true
     });
   };
@@ -103,25 +109,161 @@ class PayAccClient extends Component {
   };
 
   handleCloseClosePayAccDialog = () => {
-    this.setState({ isDialogClosePayAccOpen: false, transferAccId: "" });
+    this.setState({
+      isDialogClosePayAccOpen: false,
+      payAccId: "",
+      accNumber: "",
+      currentBalance: 0,
+      receiverPayAccNumber: ""
+    });
   };
 
-  handleClosePayAcc = (payAccId, accNumber) => {
-    // assume the desired payment account was closed successfully
-    // with its remaining balance already had been transferred to another one
-    this.setState(
-      {
-        messageType: "success",
-        isMessageOpen: true,
-        message: `Successfully close payment account ${accNumber}`,
-        payAccId: "",
-        isDialogClosePayAccOpen: false
-      },
-      // reset accNumber then refresh payment accounts list
-      () => {
-        this.setState({ accNumber: "" }, this.getPayAccsList);
-      }
-    );
+  handleClosePayAcc = () => {
+    const {
+      payAccId,
+      accNumber,
+      currentBalance,
+      receiverPayAccNumber
+    } = this.state;
+    // if selected payment account balance were not empty,
+    // let the customer transfer it to one of his account
+    if (+currentBalance > 0) {
+      if (receiverPayAccNumber === "")
+        // already set as 1st account by default in radio group
+        return this.setState({
+          messageType: "error",
+          isMessageOpen: true,
+          message: "Sorry, failed getting targeted account entity"
+        });
+      axios
+        .get(`http://localhost:3001/pay-acc/${receiverPayAccNumber}`)
+        .then(resp => {
+          const { status } = resp;
+          if (status === 200) {
+            const {
+              balance: receiverCurrentBalance,
+              id: receiverPayAccId
+            } = resp.data[0];
+            // change balance of both account and update history
+            axios
+              .all([
+                axios.patch("http://localhost:3001/pay-acc/balance", {
+                  payAccId,
+                  newBalance: 0
+                }),
+                axios.patch("http://localhost:3001/pay-acc/balance", {
+                  payAccId: receiverPayAccId,
+                  newBalance: +receiverCurrentBalance + +currentBalance
+                }),
+                axios.post("http://localhost:3001/history", {
+                  payAccId,
+                  toAccNumber: receiverPayAccNumber,
+                  amount: currentBalance,
+                  feeType: 0
+                })
+              ])
+              .then(
+                axios.spread(
+                  (
+                    updateSenderPayAcc,
+                    updateReceiverPayAcc,
+                    transferHistory
+                  ) => {
+                    if (
+                      updateSenderPayAcc.status !== 201 ||
+                      updateReceiverPayAcc.status !== 201
+                    ) {
+                      this.setState({
+                        messageType: "error",
+                        isMessageOpen: true,
+                        message: "Sorry, failed transferring remaining balance"
+                      });
+                      throw new Error(
+                        "Something went wrong when transferring remaining balance, status ",
+                        updateSenderPayAcc.status
+                      );
+                    }
+
+                    if (transferHistory.status !== 201) {
+                      this.setState({
+                        messageType: "error",
+                        isMessageOpen: true,
+                        message:
+                          "Sorry, failed updating history of the transaction"
+                      });
+                      throw new Error(
+                        "Something went wrong when updating history of the transaction, status ",
+                        updateSenderPayAcc.status
+                      );
+                    }
+
+                    if (
+                      updateSenderPayAcc.status === 201 &&
+                      updateReceiverPayAcc.status === 201 &&
+                      transferHistory.status === 201
+                    )
+                      axios
+                        .patch("http://localhost:3001/pay-acc/status/closed", {
+                          payAccId
+                        })
+                        .then(resp => {
+                          const { status } = resp;
+                          if (status === 201) {
+                            this.setState(
+                              {
+                                // reset
+                                payAccId: "",
+                                receiverPayAccNumber: "",
+                                // show message
+                                messageType: "success",
+                                isMessageOpen: true,
+                                message: `Successfully close payment account ${accNumber}`,
+                                // close dialog
+                                isDialogClosePayAccOpen: false
+                              },
+                              // reset accNumber then refresh payment accounts list
+                              () => {
+                                this.setState(
+                                  { accNumber: "" },
+                                  this.getPayAccsList
+                                );
+                              }
+                            );
+                          } else {
+                            this.setState({
+                              messageType: "error",
+                              isMessageOpen: true,
+                              message: `Sorry, failed closing payment account ${accNumber}`
+                            });
+                            throw new Error(
+                              "Something went wrong when closing payment account, status ",
+                              status
+                            );
+                          }
+                        });
+                  }
+                )
+              );
+          } else {
+            this.setState({
+              messageType: "error",
+              isMessageOpen: true,
+              message: "Sorry, failed getting targeted account entity"
+            });
+            throw new Error(
+              "Something went wrong when getting targeted account entity"
+            );
+          }
+        })
+        .catch(err => {
+          this.setState({
+            messageType: "error",
+            isMessageOpen: true,
+            message: "Sorry, failed getting targeted account entity"
+          });
+          console.log(err);
+        });
+    }
   };
 
   handleViewHistory = (payAccId, accNumber) => {
@@ -168,12 +310,13 @@ class PayAccClient extends Component {
     this.setState({
       isDialogHistoryPayAccOpen: false,
       payAccId: "",
-      accNumber: ""
+      accNumber: "",
+      currentBalance: 0
     });
   };
 
   handleCloseMessage = () => {
-    this.setState({ isMessageOpen: false });
+    this.setState({ isMessageOpen: false, message: "" });
   };
 
   render() {
@@ -183,8 +326,7 @@ class PayAccClient extends Component {
       payAccId,
       accNumber,
       currentBalance,
-      transferAccId,
-      transferredAccNumber,
+      receiverPayAccNumber,
       isDialogClosePayAccOpen,
       isDialogHistoryPayAccOpen,
       messageType,
@@ -209,16 +351,18 @@ class PayAccClient extends Component {
               >
                 history
               </Button>
-              {status === "OPEN" && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => this.onClosePayAcc(id, accNumber, balance)}
-                  style={{ marginLeft: "10px" }}
-                >
-                  close
-                </Button>
-              )}
+              {status === "OPEN" &&
+                payAccs.filter(payAcc => payAcc.status === "OPEN").length >
+                  1 && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => this.onClosePayAcc(id, accNumber, balance)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    close
+                  </Button>
+                )}
             </div>
           ];
         }),
@@ -234,30 +378,34 @@ class PayAccClient extends Component {
       },
       closePayAcc: {
         data: payAccs
-          .filter(payAcc => payAcc.id !== payAccId)
+          .filter(payAcc => payAcc.id !== payAccId && payAcc.status === "OPEN")
           .map((payAcc, index) => {
-            const { id, accNumber, balance } = payAcc;
+            const { accNumber: _accNumber, balance } = payAcc;
             return [
               <RadioGroup
-                name="transferAccId"
-                value={transferAccId}
+                name="receiverPayAccNumber"
+                value={
+                  receiverPayAccNumber !== ""
+                    ? receiverPayAccNumber
+                    : index === 0 && _accNumber
+                }
                 onChange={this.handleInputChange}
               >
                 <FormControlLabel
-                  value={id}
+                  value={_accNumber}
                   control={
                     <Radio
                       color="primary"
                       checked={
-                        (transferAccId === "" && index === 0) ||
-                        id === transferAccId
+                        (receiverPayAccNumber === "" && index === 0) ||
+                        _accNumber === receiverPayAccNumber
                       }
                     />
                   }
                   label=""
                 />
               </RadioGroup>,
-              accNumber,
+              _accNumber,
               balance
             ];
           }),
@@ -280,7 +428,11 @@ class PayAccClient extends Component {
             index + 1,
             toAccNumber,
             amount,
-            +feeType === 1 ? "Sender" : "Receiver",
+            +feeType === 1
+              ? "Sender"
+              : +feeType === 2
+              ? "Receiver"
+              : "Close payment account",
             createdAt
           ];
         }),
@@ -354,18 +506,7 @@ class PayAccClient extends Component {
             <Button onClick={this.handleCloseClosePayAccDialog} color="primary">
               Cancel
             </Button>
-            <Button
-              onClick={() =>
-                this.handleClosePayAcc(
-                  payAccId,
-                  accNumber,
-                  currentBalance,
-                  transferredAccNumber
-                )
-              }
-              color="primary"
-              autoFocus
-            >
+            <Button onClick={this.handleClosePayAcc} color="primary" autoFocus>
               Yes, I'm sure
             </Button>
           </DialogActions>
