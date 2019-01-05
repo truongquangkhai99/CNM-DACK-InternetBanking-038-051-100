@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { connect } from "react-redux";
 import {
   Button,
   Dialog,
@@ -12,140 +12,12 @@ import MUIDataTable from "mui-datatables";
 import Message from "./Message";
 import CreateAccount from "./CreateAccount";
 import MustBeStaff from "./HOCs/MustBeStaff";
+import * as customersActions from "../redux/actions/customersActions";
+import * as messageActions from "../redux/actions/messageActions";
 
 class Customers extends Component {
-  state = {
-    customers: [],
-    // for notify message
-    isMessageOpen: false,
-    messageType: "",
-    message: "",
-    // for dialog confirm creating new payment account
-    isDialogOpen: false,
-    customerId: "",
-    clientEmail: "",
-    clientName: "",
-    // for dialog notify about newly created payment account number
-    isDialogPayAccOpen: false,
-    payAccNumber: ""
-  };
-
-  getCustomersList = () => {
-    axios
-      .get("http://localhost:3001/customers")
-      .then(resp => {
-        const { status, data: customers } = resp;
-        if (status === 200) {
-          this.setState({
-            customers
-          });
-        } else {
-          this.setState({
-            messageType: "error",
-            isMessageOpen: true,
-            message: "Failed getting customers list."
-          });
-          throw new Error(
-            "Something went wrong when  getting customers list, status ",
-            status
-          );
-        }
-      })
-      .catch(err => {
-        this.setState({
-          messageType: "error",
-          isMessageOpen: true,
-          message: "Failed getting customers list"
-        });
-        console.log(err);
-      });
-  };
-
   componentDidMount = () => {
-    this.getCustomersList();
-  };
-
-  onCreatePayAcc = (customerId, clientEmail, clientName) => {
-    if (customerId === "" || clientEmail === "" || clientName === "")
-      return this.setState({
-        messageType: "error",
-        isMessageOpen: true,
-        message: "Could not get customer identities, try again later"
-      });
-    this.setState({ isDialogOpen: true, customerId, clientEmail, clientName });
-  };
-
-  handleCreatePayAcc = () => {
-    const { customerId, clientEmail, clientName } = this.state;
-    axios
-      .post("http://localhost:3001/pay-acc", {
-        customerId,
-        clientEmail,
-        clientName
-      })
-      .then(resp => {
-        const {
-          status,
-          data: { accNumber }
-        } = resp;
-        if (status === 201) {
-          this.setState({
-            isDialogOpen: false,
-            customerId: "",
-            clientEmail: "",
-            clientName: "",
-            isDialogPayAccOpen: true,
-            payAccNumber: accNumber
-          });
-        } else {
-          this.setState({
-            isDialogOpen: false,
-            customerId: "",
-            clientEmail: "",
-            clientName: "",
-            messageType: "error",
-            isMessageOpen: true,
-            message: "Failed creating payment account"
-          });
-          throw new Error(
-            "Something went wrong when  creating payment account, status ",
-            status
-          );
-        }
-      })
-      .catch(err => {
-        this.setState({
-          isDialogOpen: false,
-          customerId: "",
-          clientEmail: "",
-          clientName: "",
-          messageType: "error",
-          isMessageOpen: true,
-          message: "Failed creating payment account"
-        });
-        console.log(err);
-      });
-  };
-
-  handleCloseDialog = () => {
-    this.setState({
-      isDialogOpen: false,
-      customerId: "",
-      clientEmail: "",
-      clientName: ""
-    });
-  };
-
-  handleCloseMessage = () => {
-    this.setState({ isMessageOpen: false, message: "" });
-  };
-
-  handleCreateAccountSucceed = () => {
-    this.getCustomersList();
-  };
-
-  handleCloseDialogPayAcc = () => {
-    this.setState({ isDialogPayAccOpen: false, payAccNumber: "" });
+    this.props.getCustomersList();
   };
 
   render() {
@@ -154,10 +26,13 @@ class Customers extends Component {
       isMessageOpen,
       messageType,
       message,
-      isDialogOpen,
-      isDialogPayAccOpen,
+      customerId,
+      clientEmail,
+      clientName,
+      isCreatePayAccDialogConfirmOpen,
+      isCreatePayAccDialogOperatedOpen,
       payAccNumber
-    } = this.state;
+    } = this.props;
 
     const data = customers.map((customer, index) => [
       index + 1,
@@ -169,7 +44,7 @@ class Customers extends Component {
         variant="contained"
         color="primary"
         onClick={() =>
-          this.onCreatePayAcc(
+          this.props.openCreatePayAccConfirmDialog(
             customer.customerId,
             customer.email,
             customer.name
@@ -193,9 +68,7 @@ class Customers extends Component {
 
     return (
       <React.Fragment>
-        <CreateAccount
-          onCreateAccountSucceed={this.handleCreateAccountSucceed}
-        />
+        <CreateAccount onCreateAccountSucceed={this.props.getCustomersList} />
 
         <MUIDataTable
           title={"Customers list"}
@@ -206,8 +79,8 @@ class Customers extends Component {
 
         {/* dialog to confirm creating new payment account */}
         <Dialog
-          open={isDialogOpen}
-          onClose={this.handleCloseDialog}
+          open={isCreatePayAccDialogConfirmOpen}
+          onClose={this.props.closeCreatePayAccConfirmDialog}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -222,10 +95,23 @@ class Customers extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleCloseDialog} color="primary">
+            <Button
+              onClick={this.props.closeCreatePayAccConfirmDialog}
+              color="primary"
+            >
               cancel
             </Button>
-            <Button onClick={this.handleCreatePayAcc} color="primary" autoFocus>
+            <Button
+              onClick={() =>
+                this.props.handleCreatePayAcc(
+                  customerId,
+                  clientEmail,
+                  clientName
+                )
+              }
+              color="primary"
+              autoFocus
+            >
               create
             </Button>
           </DialogActions>
@@ -233,8 +119,8 @@ class Customers extends Component {
 
         {/* dialog to notify newly created payment account number */}
         <Dialog
-          open={isDialogPayAccOpen}
-          onClose={this.handleCloseDialogPayAcc}
+          open={isCreatePayAccDialogOperatedOpen}
+          onClose={this.props.closeCreatePayAccOperatedDialog}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -252,7 +138,7 @@ class Customers extends Component {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={this.handleCloseDialogPayAcc}
+              onClick={this.props.closeCreatePayAccOperatedDialog}
               color="primary"
               autoFocus
             >
@@ -265,11 +151,41 @@ class Customers extends Component {
           variant={messageType}
           message={message}
           open={isMessageOpen}
-          onClose={this.handleCloseMessage}
+          onClose={this.props.closeMessage}
         />
       </React.Fragment>
     );
   }
 }
 
-export default MustBeStaff(Customers);
+const mapStateToProps = state => ({
+  ...state.customers
+});
+
+const mapDispatchToProps = dispatch => ({
+  getCustomersList: () => dispatch(customersActions.getCustomersList()),
+  handleCreatePayAcc: (customerId, clientEmail, clientName) =>
+    dispatch(
+      customersActions.handleCreatePayAcc(customerId, clientEmail, clientName)
+    ),
+  openCreatePayAccConfirmDialog: (customerId, clientEmail, clientName) =>
+    dispatch(
+      customersActions.openCreatePayAccConfirmDialog(
+        customerId,
+        clientEmail,
+        clientName
+      )
+    ),
+  closeCreatePayAccConfirmDialog: () =>
+    dispatch(customersActions.closeCreatePayAccConfirmDialog()),
+  closeCreatePayAccOperatedDialog: () =>
+    dispatch(customersActions.closeCreatePayAccOperatedDialog()),
+  closeMessage: () => dispatch(messageActions.closeMessage())
+});
+
+export default MustBeStaff(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Customers)
+);
