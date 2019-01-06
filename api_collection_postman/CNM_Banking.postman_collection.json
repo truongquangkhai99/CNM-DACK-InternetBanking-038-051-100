@@ -284,7 +284,7 @@
 						"history"
 					]
 				},
-				"description": "Tạo mới một lịch sử giao dịch\nfeeType = 1: người gửi trả phí\nfeeType = 2: receiver trả phí\ntransactionType = sent: loại giao dịch gửi\ntransactionType = received: loại giao dịch nhận"
+				"description": "Tạo mới một lịch sử giao dịch\nfeeType = 0: đóng account, ko mất phí\nfeeType = 1: người gửi trả phí\nfeeType = 2: receiver trả phí\ntransactionType = sent: loại giao dịch gửi\ntransactionType = received: loại giao dịch nhận"
 			},
 			"response": []
 		},
