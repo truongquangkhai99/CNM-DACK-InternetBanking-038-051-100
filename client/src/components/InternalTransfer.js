@@ -74,10 +74,7 @@ class InternalTransfer extends Component {
             // default selected payment account
             this.setState({
               payAccs,
-              payAccsTransferable,
-              payAccId: payAccs[0].id,
-              accNumber: payAccs[0].accNumber,
-              currentBalance: +payAccs[0].balance
+              payAccsTransferable
             });
         } else {
           this.setState({
@@ -110,6 +107,8 @@ class InternalTransfer extends Component {
     if (name === "payAccId")
       return this.setState({
         [name]: value,
+        accNumber: this.state.payAccs.find(payAcc => payAcc.id === value)
+          .accNumber,
         currentBalance: +this.state.payAccs.find(payAcc => payAcc.id === value)
           .balance
       });
@@ -122,22 +121,28 @@ class InternalTransfer extends Component {
   };
 
   handleCloseOTPDialog = () => {
-    this.setState({ isDialogOTPOpen: false });
+    this.setState({
+      isDialogOTPOpen: false,
+      checkOTP: "",
+      OTP: "",
+      receiverPayAccId: "",
+      receiverName: "",
+      receiverEmail: "",
+      receiverPhone: "",
+      receiverCurrentBalance: 0
+    });
   };
 
   handleOpenOTPDialog = () => {
     const clientName = getUserInfo("f_name"),
       clientEmail = getUserInfo("f_email");
 
-    const { receiverPayAccNumber } = this.state;
-
-    if (clientName === null || clientEmail === null)
-      return this.setState({
-        messageType: "error",
-        isMessageOpen: true,
-        message:
-          "Sorry, failed getting your entity, please sign in or try again later"
-      });
+    const {
+      receiverPayAccNumber,
+      feeType,
+      currentBalance,
+      transferAmount
+    } = this.state;
 
     axios
       .all([
@@ -194,6 +199,24 @@ class InternalTransfer extends Component {
             balance: receiverCurrentBalance
           } = getReceiver.data[0];
 
+          const senderFee = +feeType === 1 ? 10000 : 0,
+            receiverFee = +feeType === 2 ? 10000 : 0;
+          if (+feeType === 1 && +senderFee > +currentBalance - +transferAmount)
+            return this.setState({
+              messageType: "error",
+              isMessageOpen: true,
+              message: "Remaining balance is not enough for extra fee"
+            });
+          if (
+            +feeType === 2 &&
+            +receiverFee > +receiverCurrentBalance + +transferAmount
+          )
+            return this.setState({
+              messageType: "error",
+              isMessageOpen: true,
+              message: "Transaction failed. Contact your receiver for detail."
+            });
+
           this.setState({
             checkOTP,
             receiverPayAccId,
@@ -221,82 +244,109 @@ class InternalTransfer extends Component {
     // check inputs
     const {
       payAccId,
+      accNumber,
       currentBalance,
       transferAmount,
       receiverPayAccId,
       receiverPayAccNumber,
       receiverCurrentBalance,
-      feeType
+      feeType,
+      transferMsg
     } = this.state;
+
     // call API
-    const transferFee = (+feeType === 1 ? 1 : 0) * 0; // <- last number is transfer fee, assume is 0 for now
+    const senderFee = +feeType === 1 ? 10000 : 0,
+      receiverFee = +feeType === 2 ? 10000 : 0;
+
     axios
       .all([
         axios.patch("http://localhost:3001/pay-acc/balance", {
           payAccId,
-          newBalance: +currentBalance - +transferAmount - transferFee
+          newBalance: +currentBalance - +transferAmount - senderFee
         }),
         axios.patch("http://localhost:3001/pay-acc/balance", {
           payAccId: receiverPayAccId,
-          newBalance: +receiverCurrentBalance + +transferAmount - transferFee
+          newBalance: +receiverCurrentBalance + +transferAmount - receiverFee
         }),
         axios.post("http://localhost:3001/history", {
           payAccId,
+          fromAccNumber: accNumber,
           toAccNumber: receiverPayAccNumber,
           amount: +transferAmount,
-          feeType: +feeType
+          transactionType: "sent",
+          feeType: -+senderFee,
+          message: transferMsg
+        }),
+        axios.post("http://localhost:3001/history", {
+          payAccId: receiverPayAccId,
+          fromAccNumber: accNumber,
+          toAccNumber: receiverPayAccNumber,
+          amount: +transferAmount,
+          transactionType: "received",
+          feeType: -+receiverFee,
+          message: transferMsg
         })
       ])
-      .then((updateSenderPayAcc, updateReceiverPayAcc, transferHistory) => {
-        if (
-          updateSenderPayAcc.status !== 201 ||
-          updateReceiverPayAcc.status !== 201
-        ) {
-          this.setState({
-            messageType: "error",
-            isMessageOpen: true,
-            message: "Sorry, failed transferring remaining balance"
-          });
-          throw new Error(
-            "Something went wrong when transferring remaining balance, status ",
-            updateSenderPayAcc.status
-          );
-        }
+      .then(
+        axios.spread(
+          (
+            updateSenderPayAcc,
+            updateReceiverPayAcc,
+            sendHistory,
+            receiveHistory
+          ) => {
+            if (
+              updateSenderPayAcc.status !== 201 ||
+              updateReceiverPayAcc.status !== 201
+            ) {
+              this.setState({
+                messageType: "error",
+                isMessageOpen: true,
+                message: "Sorry, transaction failed"
+              });
+              throw new Error(
+                "Something went wrong operating transaction, status ",
+                updateSenderPayAcc.status
+              );
+            }
 
-        if (transferHistory.status !== 201) {
-          this.setState({
-            messageType: "error",
-            isMessageOpen: true,
-            message: "Sorry, failed updating history of the transaction"
-          });
-          throw new Error(
-            "Something went wrong when updating history of the transaction, status ",
-            updateSenderPayAcc.status
-          );
-        }
+            if (sendHistory.status !== 201 || receiveHistory.status !== 201) {
+              this.setState({
+                messageType: "error",
+                isMessageOpen: true,
+                message: "Sorry, failed updating history of the transaction"
+              });
+              throw new Error(
+                "Something went wrong when updating history of the transaction, status ",
+                updateSenderPayAcc.status
+              );
+            }
 
-        if (
-          updateSenderPayAcc.status === 201 &&
-          updateReceiverPayAcc.status === 201 &&
-          transferHistory.status === 201
+            if (
+              updateSenderPayAcc.status === 201 &&
+              updateReceiverPayAcc.status === 201 &&
+              sendHistory.status === 201 &&
+              receiveHistory.status === 201
+            )
+              this.setState(
+                {
+                  isDialogOTPOpen: false,
+                  messageType: "success",
+                  isMessageOpen: true,
+                  message: "Successfully operated the transaction",
+                  // reset form
+                  receiverPayAccNumber: "",
+                  transferAmount: "",
+                  transferMsg: "",
+                  OTP: "",
+                  checkOTP: "",
+                  feeType: "1"
+                }, // refresh payment accounts
+                this.getPayAccsList
+              );
+          }
         )
-          this.setState(
-            {
-              isDialogOTPOpen: false,
-              messageType: "success",
-              isMessageOpen: true,
-              message: "Successfully operated the transaction",
-              // reset form
-              receiverPayAccNumber: "",
-              transferAmount: "",
-              transferMsg: "",
-              OTP: "",
-              checkOTP: "",
-              feeType: "1"
-            }, // refresh payment accounts
-            this.getPayAccsList
-          );
-      })
+      )
       .catch(err => {
         console.log(err);
       });
@@ -386,35 +436,40 @@ class InternalTransfer extends Component {
                     <InputLabel htmlFor="payAccId">
                       Payments accounts list
                     </InputLabel>
-                    {payAccId !== "" && (
-                      <Select
-                        value={payAccId}
-                        onChange={this.handleInputChange}
-                        inputProps={{
-                          name: "payAccId",
-                          id: "payAccId"
-                        }}
-                      >
-                        {payAccsTransferable.map((payAcc, index) => (
-                          <MenuItem key={index} value={payAcc.id}>
-                            {payAcc.accNumber}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    )}
+
+                    <Select
+                      value={payAccId}
+                      onChange={this.handleInputChange}
+                      inputProps={{
+                        name: "payAccId",
+                        id: "payAccId"
+                      }}
+                      autoFocus
+                    >
+                      {payAccsTransferable.map((payAcc, index) => (
+                        <MenuItem key={index} value={payAcc.id}>
+                          {payAcc.accNumber}
+                        </MenuItem>
+                      ))}
+                    </Select>
                     <FormHelperText>
                       Current balance: {currentBalance}
                     </FormHelperText>
+                    {payAccId !== "" && currentBalance < 10000 && (
+                      <FormHelperText style={{ color: "red" }}>
+                        Current balance is not enough for the extra fee
+                      </FormHelperText>
+                    )}
                   </FormControl>
                   <TextField
                     id="receiverPayAccNumber"
                     label="Account number of receiver *"
-                    autoFocus
                     fullWidth
                     margin="normal"
                     onChange={this.handleInputChange}
                     name="receiverPayAccNumber"
                     value={receiverPayAccNumber}
+                    disabled={currentBalance < 10000}
                   />
                   {payAccs
                     .map(payAcc => payAcc.accNumber)
@@ -433,6 +488,7 @@ class InternalTransfer extends Component {
                     onChange={this.handleInputChange}
                     name="transferAmount"
                     value={transferAmount}
+                    disabled={currentBalance < 10000}
                   />
                   {+transferAmount > +currentBalance && (
                     <FormHelperText style={{ color: "red" }}>
@@ -448,14 +504,17 @@ class InternalTransfer extends Component {
                     onChange={this.handleInputChange}
                     name="transferMsg"
                     value={transferMsg}
+                    disabled={currentBalance < 10000}
                   />
                 </div>
                 <div>
                   <div style={{ textAlign: "left" }}>
                     <FormControl component="div">
-                      <FormLabel component="legend">Fee payment type</FormLabel>
+                      <FormLabel component="legend">
+                        Fee payment type (-10.000)
+                      </FormLabel>
                       <RadioGroup
-                        aria-label="Fee payment type"
+                        aria-label="Fee payment type (-10.000)"
                         name="feeType"
                         value={feeType}
                         onChange={this.handleInputChange}
@@ -464,11 +523,13 @@ class InternalTransfer extends Component {
                           value="1"
                           control={<Radio />}
                           label="Sender"
+                          disabled={currentBalance < 10000}
                         />
                         <FormControlLabel
                           value="2"
                           control={<Radio />}
                           label="Receiver"
+                          disabled={currentBalance < 10000}
                         />
                       </RadioGroup>
                     </FormControl>
@@ -481,7 +542,7 @@ class InternalTransfer extends Component {
                       onClick={this.handleOpenOTPDialog}
                       disabled={this.checkValidInputs()}
                     >
-                      send otp
+                      Transfer
                     </Button>
                   </div>
                 </div>
@@ -565,6 +626,7 @@ class InternalTransfer extends Component {
                 onChange={this.handleInputChange}
                 name="OTP"
                 value={OTP}
+                autoFocus
               />
               <FormHelperText style={{ color: OTP.length > 6 && "red" }}>
                 OTP code is 6 characters long
