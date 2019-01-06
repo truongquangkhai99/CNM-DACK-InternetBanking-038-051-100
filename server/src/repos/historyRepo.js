@@ -20,6 +20,7 @@ exports.add = historyEntity => {
 };
 
 exports.loadByPayAccId = payAccId => {
-  var sql = `select * from history where payAccId = '${payAccId}'`;
+  // var sql = `select * from history where payAccId = '${payAccId}'`;
+  var sql = `SELECT *  FROM history where payAccId = '${payAccId}' AND (Cast(createdAt as datetime) > DATE_ADD(NOW(), INTERVAL - 30 DAY));`
   return db.load(sql);
 };

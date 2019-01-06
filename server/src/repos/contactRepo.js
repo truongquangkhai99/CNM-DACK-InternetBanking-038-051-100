@@ -19,3 +19,9 @@ exports.loadByCustomerId = customerId => {
   var sql = `select * from contact where customerId = '${customerId}'`;
   return db.load(sql);
 };
+
+exports.checkExisted = contactEntity => {
+  const { customerId, accNumber } = contactEntity;
+  var sql = `select * from contact where customerId = '${customerId}' AND toAccNumber = '${accNumber}'`;
+  return db.load(sql);
+};

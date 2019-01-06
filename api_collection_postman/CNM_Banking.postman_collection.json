@@ -301,6 +301,12 @@
 						"name": "Content-Type",
 						"type": "text",
 						"value": "application/json"
+					},
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImZfaWQiOiI3a3h3RFN4Q3JEIiwiZl91c2VybmFtZSI6InN0YWZmIiwiZl9wYXNzd29yZCI6IjIwMmNiOTYyYWM1OTA3NWI5NjRiMDcxNTJkMjM0YjcwIiwiZl9lbWFpbCI6InRhdWxhbmhhbnZpZW5tQGdtYWlsLmNvbSIsImZfbmFtZSI6Im5oYW52aWVuIiwiZl9waG9uZSI6IjA2OTgzNTQ0IiwiZl90eXBlIjoyLCJmX2NyZWF0ZWRBdCI6IjIwMTgtMTItMzAgMTY6MzQifSwiaWF0IjoxNTQ2NzcwMzI5LCJleHAiOjE1NDY4MzAzMjl9.QFRWH5gqlQAMSU5dfULXRpMWJCrWWaBKG3YwqVpzZ64",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -440,6 +446,40 @@
 					]
 				},
 				"description": "lấy danh sách liên lạc theo customerId"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/contact/:accNumber/is-existed",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\": \"RS9vvnjvYR\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/contact/91538945/is-existed",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"contact",
+						"91538945",
+						"is-existed"
+					]
+				}
 			},
 			"response": []
 		}

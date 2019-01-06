@@ -50,4 +50,28 @@ router.get("/contacts/:customerId", (req, res) => {
         });
 });
 
+router.get("/contact/:accNumber/is-existed", (req, res) => {
+    const { customerId } = req.body;
+    const { accNumber } = req.params;
+    const contactEntity = { customerId, accNumber }
+
+    contactRepo
+        .checkExisted(contactEntity)
+        .then(rows => {
+            res.statusCode = 200;
+            console.log(rows);
+            if (rows.length > 0) {
+                res.json({ "existed": "1" });
+            } else {
+                res.json({ "existed": "0" });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end("View error log on console");
+        });
+});
+
+
 module.exports = router;
