@@ -7,7 +7,8 @@ import {
   CustomersContainer,
   InternalTransferContainer,
   PayAccClientContainer,
-  PayAccStaffContainer
+  PayAccStaffContainer,
+  ContactsContainer
 } from "./components/DashContainer";
 
 const routes = [
@@ -29,12 +30,6 @@ const routes = [
     exact: false,
     comp: props => <SignOut />
   },
-  // {
-  //   path: "/sign-up",
-  //   isPrivate: false,
-  //   exact: false,
-  //   comp: props => <SignUp {...props} />
-  // },
   {
     path: "/customers",
     isPrivate: true,
@@ -58,6 +53,12 @@ const routes = [
     isPrivate: true,
     exact: true,
     comp: props => <InternalTransferContainer {...props} />
+  },
+  {
+    path: "/contacts",
+    isPrivate: true,
+    exact: true,
+    comp: props => <ContactsContainer {...props} />
   },
   {
     path: "/somewhere-the-God-only-knows",

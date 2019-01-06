@@ -4,6 +4,7 @@ import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import {
   People as PeopleIcon,
   BarChart as BarChartIcon,
+  Contacts as ContactsIcon,
   Person as PersonIcon
 } from "@material-ui/icons";
 
@@ -23,6 +24,14 @@ export const mainListItems = (
           <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="Internal transfers" />
+      </ListItem>
+    </Link>
+    <Link to="/contacts">
+      <ListItem button>
+        <ListItemIcon>
+          <ContactsIcon />
+        </ListItemIcon>
+        <ListItemText primary="Contacts" />
       </ListItem>
     </Link>
   </div>

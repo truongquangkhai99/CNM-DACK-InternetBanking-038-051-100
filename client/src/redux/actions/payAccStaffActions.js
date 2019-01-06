@@ -1,10 +1,15 @@
 import axios from "axios";
+import { getCookie } from "tiny-cookie";
 import * as payAccStaffConstants from "../constants/payAccStaffConstants";
 import * as messageConstants from "../constants/messageConstants";
 
 export const getPayAccsList = () => dispatch =>
   axios
-    .get("http://localhost:3001/pay-accs")
+    .get("http://localhost:3001/pay-accs", {
+      headers: {
+        "x-access-token": getCookie("access_token")
+      }
+    })
     .then(resp => {
       const { status, data: payAccs } = resp;
       if (status === 200) {

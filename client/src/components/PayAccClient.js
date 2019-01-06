@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { getCookie } from "tiny-cookie";
 import {
   Button,
   Radio,
@@ -46,7 +47,11 @@ class PayAccClient extends Component {
       });
 
     axios
-      .get(`http://localhost:3001/pay-accs/${customerId}`)
+      .get(`http://localhost:3001/pay-accs/${customerId}`, {
+        headers: {
+          "x-access-token": getCookie("access_token")
+        }
+      })
       .then(resp => {
         const { status, data: payAccs } = resp;
         if (status === 200) {
@@ -136,7 +141,11 @@ class PayAccClient extends Component {
           message: "Sorry, failed getting targeted account entity"
         });
       axios
-        .get(`http://localhost:3001/pay-acc/${receiverPayAccNumber}`)
+        .get(`http://localhost:3001/pay-acc/${receiverPayAccNumber}`, {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        })
         .then(resp => {
           const { status } = resp;
           if (status === 200) {
@@ -147,32 +156,64 @@ class PayAccClient extends Component {
             // change balance of both account and update history
             axios
               .all([
-                axios.patch("http://localhost:3001/pay-acc/balance", {
-                  payAccId,
-                  newBalance: 0
-                }),
-                axios.patch("http://localhost:3001/pay-acc/balance", {
-                  payAccId: receiverPayAccId,
-                  newBalance: +receiverCurrentBalance + +currentBalance
-                }),
-                axios.post("http://localhost:3001/history", {
-                  payAccId,
-                  fromAccNumber: accNumber,
-                  toAccNumber: receiverPayAccNumber,
-                  amount: currentBalance,
-                  transactionType: "closed",
-                  message: "Close payment account",
-                  feeType: 0
-                }),
-                axios.post("http://localhost:3001/history", {
-                  payAccId: receiverPayAccId,
-                  fromAccNumber: accNumber,
-                  toAccNumber: receiverPayAccNumber,
-                  amount: currentBalance,
-                  transactionType: "received",
-                  message: "Receive",
-                  feeType: 0
-                })
+                axios.patch(
+                  "http://localhost:3001/pay-acc/balance",
+                  {
+                    payAccId,
+                    newBalance: 0
+                  },
+                  {
+                    headers: {
+                      "x-access-token": getCookie("access_token")
+                    }
+                  }
+                ),
+                axios.patch(
+                  "http://localhost:3001/pay-acc/balance",
+                  {
+                    payAccId: receiverPayAccId,
+                    newBalance: +receiverCurrentBalance + +currentBalance
+                  },
+                  {
+                    headers: {
+                      "x-access-token": getCookie("access_token")
+                    }
+                  }
+                ),
+                axios.post(
+                  "http://localhost:3001/history",
+                  {
+                    payAccId,
+                    fromAccNumber: accNumber,
+                    toAccNumber: receiverPayAccNumber,
+                    amount: currentBalance,
+                    transactionType: "closed",
+                    message: "Close payment account",
+                    feeType: 0
+                  },
+                  {
+                    headers: {
+                      "x-access-token": getCookie("access_token")
+                    }
+                  }
+                ),
+                axios.post(
+                  "http://localhost:3001/history",
+                  {
+                    payAccId: receiverPayAccId,
+                    fromAccNumber: accNumber,
+                    toAccNumber: receiverPayAccNumber,
+                    amount: currentBalance,
+                    transactionType: "received",
+                    message: "Receive",
+                    feeType: 0
+                  },
+                  {
+                    headers: {
+                      "x-access-token": getCookie("access_token")
+                    }
+                  }
+                )
               ])
               .then(
                 axios.spread(
@@ -236,9 +277,17 @@ class PayAccClient extends Component {
         });
     }
     axios
-      .patch("http://localhost:3001/pay-acc/status/closed", {
-        payAccId
-      })
+      .patch(
+        "http://localhost:3001/pay-acc/status/closed",
+        {
+          payAccId
+        },
+        {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        }
+      )
       .then(resp => {
         const { status } = resp;
         if (status === 201) {
@@ -290,7 +339,11 @@ class PayAccClient extends Component {
       });
 
     axios
-      .get(`http://localhost:3001/histories/${payAccId}`)
+      .get(`http://localhost:3001/histories/${payAccId}`, {
+        headers: {
+          "x-access-token": getCookie("access_token")
+        }
+      })
       .then(resp => {
         const { status, data: histories } = resp;
         if (status === 200) {

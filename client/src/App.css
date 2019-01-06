@@ -86,25 +86,6 @@ a {
   margin-bottom: 25px;
 }
 
-@media screen and (max-width: 921px) {
-  .form-panel {
-    min-height: 100vh;
-    width: 100%;
-  }
-
-  .form-2-cols > div > div {
-    display: initial;
-  }
-
-  .form-2-cols > div > div:first-of-type {
-    padding-right: 0;
-  }
-
-  .form-2-cols > div > div:last-of-type {
-    padding-left: 0;
-  }
-}
-
 .pay-in > div > div > div > div {
   margin-top: 10px;
 }
@@ -129,6 +110,20 @@ a {
   margin-top: 35px;
 }
 
+.contacts > div > div > div {
+  display: inline-block;
+  vertical-align: top;
+  width: 31.5%;
+}
+
+.contacts > div > div > div:not(:first-of-type) {
+  margin-left: 15px;
+}
+
+.contacts > div > div > div:last-of-type {
+  margin-top: 30px;
+}
+
 .btn-close {
   color: darkgray;
   cursor: pointer;
@@ -141,4 +136,33 @@ a {
   top: -10px;
   width: 30px;
   z-index: 100;
+}
+
+@media screen and (max-width: 921px) {
+  .form-panel {
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .form-2-cols > div > div {
+    display: initial;
+  }
+
+  .form-2-cols > div > div:first-of-type {
+    padding-right: 0;
+  }
+
+  .form-2-cols > div > div:last-of-type {
+    padding-left: 0;
+  }
+
+  .contacts > div > div > div:not(:last-of-type) {
+    width: 48.5%;
+  }
+
+  .contacts > div > div > div:last-of-type {
+    display: initial;
+    margin-left: 0;
+    width: 100%;
+  }
 }

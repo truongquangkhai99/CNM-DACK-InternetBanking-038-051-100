@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { getCookie } from "tiny-cookie";
 import axios from "axios";
 import { Button, Paper, TextField, Typography, Icon } from "@material-ui/core";
 import Message from "./Message";
@@ -55,10 +56,18 @@ export default class PayIn extends Component {
       });
 
     axios
-      .patch("http://localhost:3001/pay-acc/balance", {
-        payAccId,
-        newBalance: +currentBalance + +payInAmount
-      })
+      .patch(
+        "http://localhost:3001/pay-acc/balance",
+        {
+          payAccId,
+          newBalance: +currentBalance + +payInAmount
+        },
+        {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        }
+      )
       .then(resp => {
         const { status } = resp;
         if (status) {

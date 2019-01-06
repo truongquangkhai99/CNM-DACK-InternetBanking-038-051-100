@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { getCookie } from "tiny-cookie";
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
@@ -29,28 +31,35 @@ import MustBeCustomer from "./HOCs/MustBeCustomer";
 import { getUserInfo } from "../utils/authHelper";
 
 class InternalTransfer extends Component {
-  state = {
-    payAccs: [],
-    payAccsTransferable: [],
-    payAccId: "",
-    currentBalance: 0,
-    // for notify message
-    isMessageOpen: false,
-    messageType: "",
-    message: "",
-    receiverPayAccId: "",
-    receiverPayAccNumber: "",
-    receiverName: "",
-    receiverEmail: "",
-    receiverPhone: "",
-    receiverCurrentBalance: 0,
-    transferAmount: "",
-    transferMsg: "",
-    feeType: "1",
-    isDialogOTPOpen: false,
-    OTP: "",
-    checkOTP: null
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      payAccs: [],
+      payAccsTransferable: [],
+      payAccId: "",
+      currentBalance: 0,
+      // for notify message
+      isMessageOpen: false,
+      messageType: "",
+      message: "",
+      receiverPayAccId: "",
+      receiverPayAccNumber:
+        (props.location.state && props.location.state.receiverPayAccNumber) ||
+        "",
+      receiverName: "",
+      receiverEmail: "",
+      receiverPhone: "",
+      receiverCurrentBalance: 0,
+      transferAmount: "",
+      transferMsg: "",
+      feeType: "1",
+      isDialogOTPOpen: false,
+      OTP: "",
+      checkOTP: null,
+      isInContacts: true,
+      saveContact: true
+    };
+  }
 
   getPayAccsList = () => {
     const customerId = getUserInfo("f_id");
@@ -63,7 +72,11 @@ class InternalTransfer extends Component {
       });
 
     axios
-      .get(`http://localhost:3001/pay-accs/${customerId}`)
+      .get(`http://localhost:3001/pay-accs/${customerId}`, {
+        headers: {
+          "x-access-token": getCookie("access_token")
+        }
+      })
       .then(resp => {
         const { status, data } = resp;
         if (status === 200) {
@@ -123,13 +136,15 @@ class InternalTransfer extends Component {
   handleCloseOTPDialog = () => {
     this.setState({
       isDialogOTPOpen: false,
-      checkOTP: "",
+      checkOTP: null,
       OTP: "",
       receiverPayAccId: "",
       receiverName: "",
       receiverEmail: "",
       receiverPhone: "",
-      receiverCurrentBalance: 0
+      receiverCurrentBalance: 0,
+      saveContact: true,
+      isInContacts: true
     });
   };
 
@@ -143,17 +158,43 @@ class InternalTransfer extends Component {
       currentBalance,
       transferAmount
     } = this.state;
-
+    console.log(
+      getUserInfo("f_id"),
+      `http://localhost:3001/contact/${receiverPayAccNumber}/is-existed`
+    );
     axios
       .all([
-        axios.post("http://localhost:3001/send-otp", {
-          clientEmail,
-          clientName
+        axios.post(
+          "http://localhost:3001/send-otp",
+          {
+            clientEmail,
+            clientName
+          },
+          {
+            headers: {
+              "x-access-token": getCookie("access_token")
+            }
+          }
+        ),
+        axios.get(`http://localhost:3001/pay-acc/${receiverPayAccNumber}`, {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
         }),
-        axios.get(`http://localhost:3001/pay-acc/${receiverPayAccNumber}`)
+        axios.get(
+          `http://localhost:3001/contact/${receiverPayAccNumber}/is-existed?customerId=${getUserInfo(
+            "f_id"
+          )}`,
+          {
+            headers: {
+              "content-type": "application/json",
+              "x-access-token": getCookie("access_token")
+            }
+          }
+        )
       ])
       .then(
-        axios.spread((getOTP, getReceiver) => {
+        axios.spread((getOTP, getReceiver, getContactExisted) => {
           if (getOTP.status !== 201) {
             this.setState({
               messageType: "error",
@@ -217,6 +258,8 @@ class InternalTransfer extends Component {
               message: "Transaction failed. Contact your receiver for detail."
             });
 
+          const isInContacts = +getContactExisted.data.existed === 1;
+          console.log(getContactExisted.data.existed);
           this.setState({
             checkOTP,
             receiverPayAccId,
@@ -225,7 +268,8 @@ class InternalTransfer extends Component {
             receiverPhone,
             receiverPayAccNumber,
             receiverCurrentBalance,
-            isDialogOTPOpen: true
+            isDialogOTPOpen: true,
+            isInContacts
           });
         })
       )
@@ -240,6 +284,10 @@ class InternalTransfer extends Component {
       });
   };
 
+  handleCheckChange = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
+
   handleTransfer = () => {
     // check inputs
     const {
@@ -249,26 +297,46 @@ class InternalTransfer extends Component {
       transferAmount,
       receiverPayAccId,
       receiverPayAccNumber,
+      receiverName,
       receiverCurrentBalance,
       feeType,
-      transferMsg
+      transferMsg,
+      saveContact,
+      isInContacts
     } = this.state;
 
     // call API
     const senderFee = +feeType === 1 ? 10000 : 0,
       receiverFee = +feeType === 2 ? 10000 : 0;
 
-    axios
-      .all([
-        axios.patch("http://localhost:3001/pay-acc/balance", {
+    const axiosArr = [
+      axios.patch(
+        "http://localhost:3001/pay-acc/balance",
+        {
           payAccId,
           newBalance: +currentBalance - +transferAmount - senderFee
-        }),
-        axios.patch("http://localhost:3001/pay-acc/balance", {
+        },
+        {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        }
+      ),
+      axios.patch(
+        "http://localhost:3001/pay-acc/balance",
+        {
           payAccId: receiverPayAccId,
           newBalance: +receiverCurrentBalance + +transferAmount - receiverFee
-        }),
-        axios.post("http://localhost:3001/history", {
+        },
+        {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        }
+      ),
+      axios.post(
+        "http://localhost:3001/history",
+        {
           payAccId,
           fromAccNumber: accNumber,
           toAccNumber: receiverPayAccNumber,
@@ -276,8 +344,16 @@ class InternalTransfer extends Component {
           transactionType: "sent",
           feeType: -+senderFee,
           message: transferMsg
-        }),
-        axios.post("http://localhost:3001/history", {
+        },
+        {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        }
+      ),
+      axios.post(
+        "http://localhost:3001/history",
+        {
           payAccId: receiverPayAccId,
           fromAccNumber: accNumber,
           toAccNumber: receiverPayAccNumber,
@@ -285,8 +361,34 @@ class InternalTransfer extends Component {
           transactionType: "received",
           feeType: -+receiverFee,
           message: transferMsg
-        })
-      ])
+        },
+        {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        }
+      )
+    ];
+
+    if (saveContact === true && isInContacts === false)
+      axiosArr.push(
+        axios.post(
+          "http://localhost:3001/contact",
+          {
+            customerId: getUserInfo("f_id"),
+            toAccNumber: receiverPayAccNumber,
+            toNickName: receiverName
+          },
+          {
+            headers: {
+              "x-access-token": getCookie("access_token")
+            }
+          }
+        )
+      );
+
+    axios
+      .all([...axiosArr])
       .then(
         axios.spread(
           (
@@ -340,9 +442,14 @@ class InternalTransfer extends Component {
                   transferMsg: "",
                   OTP: "",
                   checkOTP: "",
-                  feeType: "1"
+                  currentBalance:
+                    +currentBalance -
+                    +transferAmount -
+                    (+feeType === 1 ? 10000 : 0),
+                  saveContact: true,
+                  isInContacts: true
                 }, // refresh payment accounts
-                this.getPayAccsList
+                this.setState({ feeType: "1" }, this.getPayAccsList)
               );
           }
         )
@@ -400,7 +507,9 @@ class InternalTransfer extends Component {
       feeType,
       isDialogOTPOpen,
       OTP,
-      checkOTP
+      checkOTP,
+      saveContact,
+      isInContacts
     } = this.state;
 
     return (
@@ -617,6 +726,20 @@ class InternalTransfer extends Component {
                 </Table>
               </div>
             </div>
+            {isInContacts === false && (
+              <div>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={saveContact}
+                      onChange={this.handleCheckChange("saveContact")}
+                      value="true"
+                    />
+                  }
+                  label="Save this receiver's account to your contact?"
+                />
+              </div>
+            )}
             <div>
               <TextField
                 id="OTP"

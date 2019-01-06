@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { getCookie } from "tiny-cookie";
 import axios from "axios";
 import { Button, Paper, TextField, Typography } from "@material-ui/core";
 import Message from "./Message";
@@ -62,14 +63,22 @@ export default class CreateAccount extends Component {
       });
 
     axios
-      .post("http://localhost:3001/auth/user", {
-        Username: username,
-        Password: password,
-        Name: name,
-        Phone: phone,
-        Email: email,
-        Type: "1"
-      })
+      .post(
+        "http://localhost:3001/auth/user",
+        {
+          Username: username,
+          Password: password,
+          Name: name,
+          Phone: phone,
+          Email: email,
+          Type: "1"
+        },
+        {
+          headers: {
+            "x-access-token": getCookie("access_token")
+          }
+        }
+      )
       .then(resp => {
         const { status } = resp;
         if (status === 201) {

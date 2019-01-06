@@ -58,9 +58,7 @@ const customersReducer = (state = initState, action) => {
     case messageConstants.CLOSE_MESSAGE:
       return {
         ...state,
-        messageType: "",
-        isMessageOpen: false,
-        message: ""
+        isMessageOpen: false
       };
     default:
       return state;

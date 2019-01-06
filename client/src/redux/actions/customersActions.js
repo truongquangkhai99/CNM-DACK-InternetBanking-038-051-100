@@ -1,10 +1,15 @@
 import axios from "axios";
+import { getCookie } from "tiny-cookie";
 import * as customersConstants from "../constants/customersConstants";
 import * as messageConstants from "../constants/messageConstants";
 
 export const getCustomersList = () => dispatch =>
   axios
-    .get("http://localhost:3001/customers")
+    .get("http://localhost:3001/customers", {
+      headers: {
+        "x-access-token": getCookie("access_token")
+      }
+    })
     .then(resp => {
       const { status, data: customers } = resp;
       if (status === 200) {
@@ -43,11 +48,19 @@ export const handleCreatePayAcc = (
   clientName
 ) => dispatch =>
   axios
-    .post("http://localhost:3001/pay-acc", {
-      customerId,
-      clientEmail,
-      clientName
-    })
+    .post(
+      "http://localhost:3001/pay-acc",
+      {
+        customerId,
+        clientEmail,
+        clientName
+      },
+      {
+        headers: {
+          "x-access-token": getCookie("access_token")
+        }
+      }
+    )
     .then(resp => {
       const {
         status,
