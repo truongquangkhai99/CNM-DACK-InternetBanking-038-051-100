@@ -11,11 +11,7 @@ var nodemailer = require("./nodemailer");
 
 // Controllers START
 
-// var driverCtrl = require("./src/apiControllers/driverControllers");
-
 var authCtrl = require("./src/apiControllers/authControllers");
-
-// var requestCtrl = require("./src/apiControllers/requestControllers");
 
 var payAccCtrl = require("./src/apiControllers/payAccControllers");
 
@@ -61,23 +57,17 @@ app.post("/send-otp", (req, res) => {
   res.json({ otp: otp });
 });
 
-//app.use("/", requestCtrl);
-// app.use("/", verifyAccessToken, requestCtrl);
+// app.use("/", payAccCtrl);
+app.use("/", verifyAccessToken, payAccCtrl);
 
-app.use("/", payAccCtrl);
-// app.use("/", verifyAccessToken, payAccCtrl);
+// app.use("/", historyCtrl);
+app.use("/", verifyAccessToken, historyCtrl);
 
-app.use("/", historyCtrl);
-// app.use("/", verifyAccessToken, historyCtrl);
+// app.use("/", contactCtrl);
+app.use("/", verifyAccessToken, contactCtrl);
 
-app.use("/", contactCtrl);
-// app.use("/", verifyAccessToken, contactCtrl);
-
-app.use("/", customerCtrl);
-// app.use("/", verifyAccessToken, customerCtrl);
-
-//app.use("/driver", driverCtrl);
-// app.use("/driver", verifyAccessToken, driverCtrl);
+// app.use("/", customerCtrl);
+app.use("/", verifyAccessToken, customerCtrl);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
