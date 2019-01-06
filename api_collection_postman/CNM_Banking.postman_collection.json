@@ -272,7 +272,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"payAccId\": \"-Qh5Vpqew\",\n\t\"toAccNumber\": \"91538945\",\n\t\"amount\": \"123431513\",\n\t\"feeType\": \"1\",\n\t\"transactionType\": \"sent\"\n}"
+					"raw": "{\n\t\"fromAccNumber\": \"85020173\",\n\t\"toAccNumber\": \"91538945\",\n\t\"amount\": \"123431513\",\n\t\"feeType\": \"1\",\n\t\"transactionType\": \"sent\"\n}"
 				},
 				"url": {
 					"raw": "localhost:3001/history",
@@ -289,23 +289,33 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3001/histories/:payAccId",
+			"name": "localhost:3001/histories/:fromAccNumber",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:3001/histories/-Qh5Vpqew",
+					"raw": "localhost:3001/histories/",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
 						"histories",
-						"-Qh5Vpqew"
+						""
 					]
 				},
 				"description": "lấy danh sách lịch sử giao dịch của customerId"
