@@ -450,7 +450,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:3001/contact/:accNumber/is-existed",
+			"name": "localhost:3001/contact/:accNumber/is-existed?customerId=RS9vvnjvYR",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -466,10 +466,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"customerId\": \"RS9vvnjvYR\"\n}"
+					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:3001/contact/91538945/is-existed",
+					"raw": "localhost:3001/contact/91538945/is-existed?customerId=RS9vvnjvYR",
 					"host": [
 						"localhost"
 					],
@@ -478,6 +478,12 @@
 						"contact",
 						"91538945",
 						"is-existed"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "RS9vvnjvYR"
+						}
 					]
 				}
 			},

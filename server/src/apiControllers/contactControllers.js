@@ -51,7 +51,7 @@ router.get("/contacts/:customerId", (req, res) => {
 });
 
 router.get("/contact/:accNumber/is-existed", (req, res) => {
-    const { customerId } = req.body;
+    const { customerId } = req.query;
     const { accNumber } = req.params;
     const contactEntity = { customerId, accNumber }
 
