@@ -26,6 +26,7 @@ DROP TABLE IF EXISTS `history`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `history` (
   `id` varchar(45) NOT NULL,
+  `payAccId` varchar(45) NOT NULL,
   `fromAccNumber` varchar(45) NOT NULL,
   `toAccNumber` varchar(45) NOT NULL,
   `amount` varchar(45) NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES ('aQDj8mZXW','85020173','91538945','123431513','1','sent','2019-01-06 08:17');
+INSERT INTO `history` VALUES ('INhDpqH-O','-Qh5Vpqew','85020173','91538945','123431513','1','sent','2019-01-06 09:22');
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -146,4 +147,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-06  8:17:58
+-- Dump completed on 2019-01-06  9:22:53
