@@ -21,6 +21,8 @@ var payAccCtrl = require("./src/apiControllers/payAccControllers");
 
 var historyCtrl = require("./src/apiControllers/historyControllers");
 
+var contactCtrl = require("./src/apiControllers/contactControllers");
+
 var userCtrl = require("./src/apiControllers/userControllers");
 
 var customerCtrl = require("./src/apiControllers/customerControllers");
@@ -67,6 +69,9 @@ app.use("/", payAccCtrl);
 
 app.use("/", historyCtrl);
 // app.use("/", verifyAccessToken, payAccCtrl);
+
+app.use("/", contactCtrl);
+// app.use("/", verifyAccessToken, contactCtrl);
 
 app.use("/", customerCtrl);
 // app.use("/", verifyAccessToken, customerCtrl);

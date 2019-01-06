@@ -1,0 +1,21 @@
+var db = require("../fn/mysql-db");
+
+exports.add = contactEntity => {
+  const {
+    id,
+    customerId,
+    toAccNumber,
+    toNickName,
+    createdAt
+  } = contactEntity;
+
+  const sql =
+    "insert into `contact`(`id`, `customerId`, `toAccNumber`, `toNickName`, `createdAt`)" +
+    `values('${id}', '${customerId}', '${toAccNumber}', '${toNickName}', '${createdAt}');`;
+  return db.save(sql);
+};
+
+exports.loadByCustomerId = customerId => {
+  var sql = `select * from contact where customerId = '${customerId}'`;
+  return db.load(sql);
+};

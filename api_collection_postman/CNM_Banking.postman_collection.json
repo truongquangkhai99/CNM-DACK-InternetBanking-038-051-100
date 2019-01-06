@@ -388,6 +388,60 @@
 				"description": "Update status của payacc thành CLOSED và balance của nó thành 0 (dùng để đóng tài khoản)"
 			},
 			"response": []
+		},
+		{
+			"name": "localhost:3001/contact",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"customerId\": \"RS9vvnjvYR\",\n\t\"toAccNumber\": \"91538945\",\n\t\"toNickName\": \"tôi là rô bót\"\n}"
+				},
+				"url": {
+					"raw": "localhost:3001/contact",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"contact"
+					]
+				},
+				"description": "Tạo mới liên lạc (người nhận)"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3001/contacts/:customerId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3001/contacts/RS9vvnjvYR",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"contacts",
+						"RS9vvnjvYR"
+					]
+				},
+				"description": "lấy danh sách liên lạc theo customerId"
+			},
+			"response": []
 		}
 	]
 }
