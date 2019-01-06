@@ -157,8 +157,20 @@ class PayAccClient extends Component {
                 }),
                 axios.post("http://localhost:3001/history", {
                   payAccId,
+                  fromAccNumber: accNumber,
                   toAccNumber: receiverPayAccNumber,
                   amount: currentBalance,
+                  transactionType: "closed",
+                  message: "Close payment account",
+                  feeType: 0
+                }),
+                axios.post("http://localhost:3001/history", {
+                  payAccId: receiverPayAccId,
+                  fromAccNumber: accNumber,
+                  toAccNumber: receiverPayAccNumber,
+                  amount: currentBalance,
+                  transactionType: "received",
+                  message: "Receive",
                   feeType: 0
                 })
               ])
@@ -167,7 +179,8 @@ class PayAccClient extends Component {
                   (
                     updateSenderPayAcc,
                     updateReceiverPayAcc,
-                    transferHistory
+                    sendHistory,
+                    receiveHistory
                   ) => {
                     if (
                       updateSenderPayAcc.status !== 201 ||
@@ -184,7 +197,10 @@ class PayAccClient extends Component {
                       );
                     }
 
-                    if (transferHistory.status !== 201) {
+                    if (
+                      sendHistory.status !== 201 ||
+                      receiveHistory.status !== 201
+                    ) {
                       this.setState({
                         messageType: "error",
                         isMessageOpen: true,
@@ -196,51 +212,6 @@ class PayAccClient extends Component {
                         updateSenderPayAcc.status
                       );
                     }
-
-                    if (
-                      updateSenderPayAcc.status === 201 &&
-                      updateReceiverPayAcc.status === 201 &&
-                      transferHistory.status === 201
-                    )
-                      axios
-                        .patch("http://localhost:3001/pay-acc/status/closed", {
-                          payAccId
-                        })
-                        .then(resp => {
-                          const { status } = resp;
-                          if (status === 201) {
-                            this.setState(
-                              {
-                                // reset
-                                payAccId: "",
-                                receiverPayAccNumber: "",
-                                // show message
-                                messageType: "success",
-                                isMessageOpen: true,
-                                message: `Successfully close payment account ${accNumber}`,
-                                // close dialog
-                                isDialogClosePayAccOpen: false
-                              },
-                              // reset accNumber then refresh payment accounts list
-                              () => {
-                                this.setState(
-                                  { accNumber: "" },
-                                  this.getPayAccsList
-                                );
-                              }
-                            );
-                          } else {
-                            this.setState({
-                              messageType: "error",
-                              isMessageOpen: true,
-                              message: `Sorry, failed closing payment account ${accNumber}`
-                            });
-                            throw new Error(
-                              "Something went wrong when closing payment account, status ",
-                              status
-                            );
-                          }
-                        });
                   }
                 )
               );
@@ -264,6 +235,50 @@ class PayAccClient extends Component {
           console.log(err);
         });
     }
+    axios
+      .patch("http://localhost:3001/pay-acc/status/closed", {
+        payAccId
+      })
+      .then(resp => {
+        const { status } = resp;
+        if (status === 201) {
+          this.setState(
+            {
+              // reset
+              payAccId: "",
+              receiverPayAccNumber: "",
+              // show message
+              messageType: "success",
+              isMessageOpen: true,
+              message: `Successfully close payment account ${accNumber}`,
+              // close dialog
+              isDialogClosePayAccOpen: false
+            },
+            // reset accNumber then refresh payment accounts list
+            () => {
+              this.setState({ accNumber: "" }, this.getPayAccsList);
+            }
+          );
+        } else {
+          this.setState({
+            messageType: "error",
+            isMessageOpen: true,
+            message: `Sorry, failed closing payment account ${accNumber}`
+          });
+          throw new Error(
+            "Something went wrong when closing payment account, status ",
+            status
+          );
+        }
+      })
+      .catch(err => {
+        this.setState({
+          messageType: "error",
+          isMessageOpen: true,
+          message: `Sorry, failed closing payment account ${accNumber}`
+        });
+        console.log(err);
+      });
   };
 
   handleViewHistory = (payAccId, accNumber) => {
@@ -343,6 +358,9 @@ class PayAccClient extends Component {
             accNumber,
             balance,
             createdAt,
+            <span style={{ color: status === "OPEN" ? "#008b00" : "#e54304" }}>
+              {status}
+            </span>,
             <div>
               <Button
                 variant="contained"
@@ -366,7 +384,7 @@ class PayAccClient extends Component {
             </div>
           ];
         }),
-        columns: ["#", "Number", "Balance", "Created at", "Action"],
+        columns: ["#", "Number", "Balance", "Created at", "Status", "Action"],
         options: {
           selectableRows: false,
           responsive: "scroll",
@@ -423,24 +441,32 @@ class PayAccClient extends Component {
       },
       payAccHistory: {
         data: histories.map((history, index) => {
-          const { toAccNumber, amount, feeType, createdAt } = history;
+          const {
+            fromAccNumber,
+            toAccNumber,
+            transactionType,
+            amount,
+            feeType,
+            message: msg,
+            createdAt
+          } = history;
           return [
             index + 1,
-            toAccNumber,
+            transactionType === "sent" ? toAccNumber : fromAccNumber,
             amount,
-            +feeType === 1
-              ? "Sender"
-              : +feeType === 2
-              ? "Receiver"
-              : "Close payment account",
+            transactionType.toUpperCase(),
+            +feeType,
+            msg,
             createdAt
           ];
         }),
         columns: [
           "#",
-          "Receiver account number",
+          "Sender/Receiver",
           "Amount",
-          "Fee type",
+          "Transaction type",
+          "Extra fee",
+          "Message",
           "Date time"
         ],
         options: {

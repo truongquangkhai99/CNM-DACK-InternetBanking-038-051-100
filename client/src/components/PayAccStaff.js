@@ -39,6 +39,9 @@ class PayAccStaff extends Component {
       payAcc.clientEmail,
       payAcc.balance,
       payAcc.createdAt,
+      <span style={{ color: payAcc.status === "OPEN" ? "#008b00" : "#e54304" }}>
+        {payAcc.status}
+      </span>,
       <Button
         variant="contained"
         color="primary"
@@ -64,6 +67,7 @@ class PayAccStaff extends Component {
       "Email",
       "Balance",
       "Created at",
+      "Status",
       "Action"
     ];
 
