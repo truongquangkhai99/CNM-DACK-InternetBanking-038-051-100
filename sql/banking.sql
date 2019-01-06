@@ -32,6 +32,7 @@ CREATE TABLE `history` (
   `amount` varchar(45) NOT NULL,
   `feeType` varchar(45) NOT NULL,
   `transactionType` varchar(45) NOT NULL,
+  `message` varchar(45) NOT NULL,
   `createdAt` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -43,7 +44,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES ('INhDpqH-O','-Qh5Vpqew','85020173','91538945','123431513','1','sent','2019-01-06 09:22');
+INSERT INTO `history` VALUES ('SiJmIz8ej','-Qh5Vpqew','85020173','91538945','123431513','1','sent','hello','2019-01-06 12:48');
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-06  9:22:53
+-- Dump completed on 2019-01-06 12:48:54
