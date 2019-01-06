@@ -68,7 +68,7 @@ app.use("/", payAccCtrl);
 // app.use("/", verifyAccessToken, payAccCtrl);
 
 app.use("/", historyCtrl);
-// app.use("/", verifyAccessToken, payAccCtrl);
+// app.use("/", verifyAccessToken, historyCtrl);
 
 app.use("/", contactCtrl);
 // app.use("/", verifyAccessToken, contactCtrl);
