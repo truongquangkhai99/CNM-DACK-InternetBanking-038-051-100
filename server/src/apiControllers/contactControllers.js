@@ -73,5 +73,23 @@ router.get("/contact/:accNumber/is-existed", (req, res) => {
         });
 });
 
+router.post("/contact/:contactId/delete", (req, res) => {
+    const { contactId } = req.params;
+    contactRepo
+        .deleteById(contactId)
+        .then(() => {
+            res.statusCode = 201;
+            res.json({ "deleted": "ok" });
+        })
+        .catch(err => {
+            console.log(err);
+            res.statusCode = 500;
+            res.json({
+                status: "UNKNOWN_ERROR",
+                message: err
+            });
+        });
+});
+
 
 module.exports = router;

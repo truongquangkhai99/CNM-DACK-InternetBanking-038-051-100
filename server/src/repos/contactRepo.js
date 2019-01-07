@@ -25,3 +25,9 @@ exports.checkExisted = contactEntity => {
   var sql = `select * from contact where customerId = '${customerId}' AND toAccNumber = '${accNumber}'`;
   return db.load(sql);
 };
+
+
+exports.deleteById = contactId => {
+  var sql = `delete from contact where id = '${contactId}'`;
+  return db.load(sql);
+};
