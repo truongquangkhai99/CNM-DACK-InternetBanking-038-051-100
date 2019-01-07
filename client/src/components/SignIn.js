@@ -36,7 +36,11 @@ export default class SignIn extends React.Component {
   handleSignIn = () => {
     const { username, password, captcha } = this.state;
     // validate captcha
-    // if (captcha === false) return;
+    if (captcha === false) return this.setState({
+      messageType: "warning",
+      isMessageOpen:true,
+      message: "Please check captcha"
+    });
     // validate username, password
     if (username === "" || password === "") return;
 
