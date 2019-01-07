@@ -29,6 +29,7 @@ class Customers extends Component {
       customerId,
       clientEmail,
       clientName,
+      phone,
       isCreatePayAccDialogConfirmOpen,
       isCreatePayAccDialogOperatedOpen,
       payAccNumber
@@ -47,7 +48,8 @@ class Customers extends Component {
           this.props.openCreatePayAccConfirmDialog(
             customer.customerId,
             customer.email,
-            customer.name
+            customer.name,
+            customer.phone
           )
         }
       >
@@ -106,7 +108,8 @@ class Customers extends Component {
                 this.props.handleCreatePayAcc(
                   customerId,
                   clientEmail,
-                  clientName
+                  clientName,
+                  phone
                 )
               }
               color="primary"
@@ -164,16 +167,22 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getCustomersList: () => dispatch(customersActions.getCustomersList()),
-  handleCreatePayAcc: (customerId, clientEmail, clientName) =>
+  handleCreatePayAcc: (customerId, clientEmail, clientName, phone) =>
     dispatch(
-      customersActions.handleCreatePayAcc(customerId, clientEmail, clientName)
+      customersActions.handleCreatePayAcc(
+        customerId,
+        clientEmail,
+        clientName,
+        phone
+      )
     ),
-  openCreatePayAccConfirmDialog: (customerId, clientEmail, clientName) =>
+  openCreatePayAccConfirmDialog: (customerId, clientEmail, clientName, phone) =>
     dispatch(
       customersActions.openCreatePayAccConfirmDialog(
         customerId,
         clientEmail,
-        clientName
+        clientName,
+        phone
       )
     ),
   closeCreatePayAccConfirmDialog: () =>

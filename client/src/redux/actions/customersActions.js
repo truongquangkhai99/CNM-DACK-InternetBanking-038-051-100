@@ -45,7 +45,8 @@ export const getCustomersList = () => dispatch =>
 export const handleCreatePayAcc = (
   customerId,
   clientEmail,
-  clientName
+  clientName,
+  phone
 ) => dispatch =>
   axios
     .post(
@@ -53,7 +54,8 @@ export const handleCreatePayAcc = (
       {
         customerId,
         clientEmail,
-        clientName
+        clientName,
+        phone
       },
       {
         headers: {
@@ -114,13 +116,15 @@ export const handleCreatePayAcc = (
 export const openCreatePayAccConfirmDialog = (
   customerId,
   clientEmail,
-  clientName
+  clientName,
+  phone
 ) => ({
   type: customersConstants.OPEN_CREATE_PAY_ACC_DIALOG_CONFIRM,
   payload: {
     customerId,
     clientEmail,
-    clientName
+    clientName,
+    phone
   }
 });
 

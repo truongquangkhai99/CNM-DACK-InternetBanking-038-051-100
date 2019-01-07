@@ -3,6 +3,7 @@ import { getCookie } from "tiny-cookie";
 import axios from "axios";
 import { Button, Paper, TextField, Typography, Icon } from "@material-ui/core";
 import Message from "./Message";
+import { getUserInfo } from "../utils/authHelper";
 
 export default class PayIn extends Component {
   state = {
@@ -32,7 +33,7 @@ export default class PayIn extends Component {
 
   handlePayIn = () => {
     const { payInAmount } = this.state;
-    const { payAccId, currentBalance } = this.props;
+    const { payAccId, currentBalance, accNumber } = this.props;
 
     if (
       payAccId === null ||
@@ -56,40 +57,62 @@ export default class PayIn extends Component {
       });
 
     axios
-      .patch(
-        "http://localhost:3001/pay-acc/balance",
-        {
-          payAccId,
-          newBalance: +currentBalance + +payInAmount
-        },
-        {
-          headers: {
-            "x-access-token": getCookie("access_token")
+      .all([
+        axios.patch(
+          "http://localhost:3001/pay-acc/balance",
+          {
+            payAccId,
+            newBalance: +currentBalance + +payInAmount
+          },
+          {
+            headers: {
+              "x-access-token": getCookie("access_token")
+            }
           }
-        }
+        ),
+        axios.post(
+          "http://localhost:3001/history",
+          {
+            payAccId,
+            fromAccNumber: getUserInfo("f_name"),
+            toAccNumber: accNumber,
+            amount: +payInAmount,
+            feeType: 0,
+            transactionType: "received",
+            message: "Paid in by staff"
+          },
+          {
+            headers: {
+              "x-access-token": getCookie("access_token")
+            }
+          }
+        )
+      ])
+      .then(
+        axios.spread((patchBalance, postHistory) => {
+          if (patchBalance.status === 201 && postHistory.status === 201) {
+            this.setState(
+              {
+                messageType: "success",
+                isMessageOpen: true,
+                message: "The pay in has been succeed",
+                payInAmount: ""
+              },
+              () => this.props.onPayInSucceed(payInAmount)
+            );
+          } else {
+            this.setState({
+              messageType: "error",
+              isMessageOpen: true,
+              message: "Failed submitting new balance"
+            });
+            throw new Error(
+              "Something went wrong when submitting new balance, status ",
+              patchBalance.status
+            );
+          }
+        })
       )
-      .then(resp => {
-        const { status } = resp;
-        if (status) {
-          this.setState({
-            messageType: "success",
-            isMessageOpen: true,
-            message: "The pay in has been succeed",
-            payInAmount: ""
-          });
-          this.props.onPayInSucceed(payInAmount);
-        } else {
-          this.setState({
-            messageType: "error",
-            isMessageOpen: true,
-            message: "Failed submitting new balance"
-          });
-          throw new Error(
-            "Something went wrong when  submitting new balance, status ",
-            status
-          );
-        }
-      })
       .catch(err => {
         this.setState({
           messageType: "error",

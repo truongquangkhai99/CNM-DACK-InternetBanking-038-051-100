@@ -12,6 +12,7 @@ const initState = {
   customerId: "",
   clientEmail: "",
   clientName: "",
+  customerPhone: "",
   // for dialog notify about newly created payment account number
   isCreatePayAccDialogOperatedOpen: false,
   payAccNumber: ""
