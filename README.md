@@ -14,10 +14,10 @@ This is a school project for banking management system, using Nodejs as back-end
 folder sql/banking.sql
 
 # Login account
-Staff
+1. Staff
 * username: staff
 * password: 123
-Client
+2. Client
 * username: client
 * password: 123
 
