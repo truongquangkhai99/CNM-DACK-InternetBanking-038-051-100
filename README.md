@@ -9,12 +9,29 @@ This is a school project for banking management system, using Nodejs as back-end
 * redux
 2. Backend
 * RESTful
+
+# Script SQL
+folder sql/banking.sql
+
+# Login account
+Staff
+* username: staff
+* password: 123
+Client
+* username: client
+* password: 123
+
 # Demo
+Login
+![Website photo](photos/login.png)
+Staff
 ![Website photo](photos/staff_homepage.png)
 ![Website photo](photos/staff_payacc_management.png)
 ![Website photo](photos/staff_payacc_management1.png)
+Client
 ![Website photo](photos/client1.png)
 ![Website photo](photos/client2.png)
 ![Website photo](photos/client3.png)
 ![Website photo](photos/client4.png)
+
 
