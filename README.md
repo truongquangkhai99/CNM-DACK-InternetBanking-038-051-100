@@ -9,4 +9,12 @@ This is a school project for banking management system, using Nodejs as back-end
 * redux
 2. Backend
 * RESTful
+# Demo
+![Website photo](photos/staff_homepage.png)
+![Website photo](photos/staff_payacc_management.png)
+![Website photo](photos/staff_payacc_management1.png)
+![Website photo](photos/client1.png)
+![Website photo](photos/client2.png)
+![Website photo](photos/client3.png)
+![Website photo](photos/client4.png)
 
